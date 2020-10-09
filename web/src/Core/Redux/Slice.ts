@@ -19,7 +19,7 @@ const Slice = Redux.slice(
             }
         }),
 
-        removeIncident: async<string, void>('removedIncident', incidentId => Requests.delete<any>(`topics/${incidentId}`), {
+        removeIncident: async<string, void>('removedIncident', incidentId => Requests.delete<any>(`incidents/${incidentId}`), {
             onSuccess: (state, action) => {
                 state.incidents.payload!.content = state.incidents.payload!.content.filter(incident => incident.id !== action.meta!.arg)
                 state.incidents.payload!.totalElements--

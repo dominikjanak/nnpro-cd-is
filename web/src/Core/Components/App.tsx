@@ -4,33 +4,14 @@ import ReactDOM from 'react-dom'
 import GlobalStyle from './GlobalStyle'
 import { useElement } from '../../Native'
 import Header from './Header'
-import { useGenerator } from '../../Generator'
 
-interface Static {
-
-}
-
-interface Props {
+interface Props extends React.ComponentPropsWithoutRef<'div'> {
 
 }
 
-const App: React.FC<Props> & Static = ({ children }) => {
+const App = ({ children }: Props) => {
 
     const { nav } = useElement()
-    const generator = useGenerator()
-
-    React.useEffect(() => {
-        const handleUnload = (event: Event) => {
-            if (generator && !window.confirm()) {
-                event.preventDefault()
-                event.returnValue = false
-            }
-        }
-
-        window.addEventListener('beforeunload', handleUnload)
-
-        return () => window.removeEventListener('beforeunload', handleUnload)
-    }, [generator])
 
     return (
         <>
