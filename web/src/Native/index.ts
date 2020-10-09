@@ -4,7 +4,6 @@ import * as Arrays from '../Native/Utils/Arrays'
 
 export { default as Cookie } from './Constants/Cookie'
 
-export { default as useEvent } from './Hooks/UseEvent'
 export { default as useElement } from './Hooks/UseElement'
 
 export { Validator, Time, Arrays }

@@ -2,14 +2,10 @@ enum Color {
     DARKEST = '#000',
     DARK = '#222',
     MEDIUM_DARK = '#383838',
-    MEDIUM = '#555',
     MEDIUM_LIGHT = '#888',
     LIGHT = '#CCC',
     LIGHTEST = '#EEE',
     RED = '#D22',
-    DARK_RED = '#A33',
-    GREEN = '#2A2',
-    DARK_GREEN = '#282',
 
     BACKGROUND = '#252A25',
 

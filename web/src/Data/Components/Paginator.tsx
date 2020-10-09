@@ -123,9 +123,6 @@ const Paginator: React.FC<Props> & Static = ({ onChange, page, itemsCount, freez
         }
     }
 
-    // TODO: Localize strings.
-    // TODO: Use icons instead of < and >.
-
     return (
         <Root {...props}>
             <Row>
