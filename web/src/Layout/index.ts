@@ -1,6 +1,0 @@
-export { default as Window } from './Components/Window'
-export { default as ToggleLine } from './Components/ToggleLine'
-export { default as Table } from './Components/Table'
-export { default as MinorSectionTitle } from './Components/MinorSectionTitle'
-export { default as IconText } from './Components/IconText'
-export { default as View } from './Components/View'
