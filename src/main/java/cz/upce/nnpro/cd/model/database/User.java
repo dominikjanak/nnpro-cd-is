@@ -1,8 +1,17 @@
 package cz.upce.nnpro.cd.model.database;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 @Entity(name = "user")
 public class User {
 
@@ -16,51 +25,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    public User() {
+    @Column(nullable = false, unique = false, length = 50)
+    private String firstname;
 
-    }
-
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String name) {
-        this.username = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id &&
-                Objects.equals(username, user.username) &&
-                Objects.equals(password, user.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password);
-    }
+    @Column(nullable = false, unique = false, length = 50)
+    private String surename;
 }
