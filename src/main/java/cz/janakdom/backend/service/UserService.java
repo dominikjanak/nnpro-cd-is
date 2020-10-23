@@ -1,5 +1,6 @@
 package cz.janakdom.backend.service;
 
+import cz.janakdom.backend.dao.RoleDao;
 import cz.janakdom.backend.dao.UserDao;
 import cz.janakdom.backend.model.database.User;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
@@ -23,6 +24,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private RoleService roleService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -79,6 +83,7 @@ public class UserService implements UserDetailsService {
 
     public User save(RegisterUserDto user) {
         User newUser = new User();
+        newUser.setRole(roleService.findByRole("ROLE_USER"));
         BeanUtils.copyProperties(user, newUser, "password");
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

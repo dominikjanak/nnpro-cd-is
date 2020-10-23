@@ -5,6 +5,7 @@ import cz.janakdom.backend.model.AuthRequest;
 import cz.janakdom.backend.model.AuthToken;
 import cz.janakdom.backend.model.database.User;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
+import cz.janakdom.backend.model.dto.RenewPasswordUserDto;
 import cz.janakdom.backend.security.JwtUtil;
 import cz.janakdom.backend.service.UserService;
 import org.slf4j.Logger;
@@ -45,6 +46,19 @@ public class SecurityController {
         }
 
         return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "INVALID-CREDENTIALS", null);
+    }
+
+    @PostMapping("/renew")
+    public ApiResponse<Void> authenticate(@RequestBody RenewPasswordUserDto renew) {
+        User user = userService.findByUsername(renew.getUsername());
+
+        if (user != null) {
+            user.setRenewTask(true);
+            userService.update(user);
+            return new ApiResponse<Void>(200, "SUCCESS", null);
+        }
+
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
     }
 
     @PostMapping("/logout")

@@ -41,11 +41,17 @@ public class User {
 
     @Getter
     @Setter
+    @Column(nullable = false)
+    private Boolean renewTask = false;
+
+    @Getter
+    @Setter
     @Column(nullable = false, length = 100, unique = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String email;
 
-
+    @Setter
+    @Getter
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;

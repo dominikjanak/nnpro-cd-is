@@ -131,14 +131,15 @@ CREATE TABLE security_incident
 
 CREATE TABLE `user`
 (
-    id        INT          NOT NULL,
-    email     VARCHAR(100) NOT NULL,
-    firstname VARCHAR(50) DEFAULT NULL,
-    password  VARCHAR(200) NOT NULL,
-    surname   VARCHAR(50) DEFAULT NULL,
-    username  VARCHAR(35)  NOT NULL,
-    area_id   INT         DEFAULT NULL,
-    role_id   INT          NOT NULL
+    id         INT          NOT NULL,
+    email      VARCHAR(100) NOT NULL,
+    firstname  VARCHAR(50) DEFAULT NULL,
+    password   VARCHAR(200) NOT NULL,
+    surname    VARCHAR(50) DEFAULT NULL,
+    username   VARCHAR(35)  NOT NULL,
+    renew_task bit(1)       NOT NULL,
+    area_id    INT         DEFAULT NULL,
+    role_id    INT          NOT NULL
 );
 
 /* Create Indexes */
