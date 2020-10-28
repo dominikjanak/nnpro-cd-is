@@ -31,4 +31,5 @@ INSERT INTO region (id, abbreviation, name, area_id) VALUES
 (14, 'VYS', 'Kraj Vysočina', 3);
 
 INSERT INTO user (id, email, username, password, firstname, surname, area_id, renew_task, role_id) VALUES
-(1, 'admin@example.com', 'admin', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', NULL, NULL, NULL, false, 1);
+(1, 'admin@example.com', 'admin', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', NULL, NULL, NULL, false, 1),
+(2, 'user@example.com', 'user', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', 'Uživatel', 'Veselý', 3, false, 2);
