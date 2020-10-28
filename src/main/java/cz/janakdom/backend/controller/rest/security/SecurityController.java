@@ -51,7 +51,7 @@ public class SecurityController {
 
     @PostMapping("/renew")
     public ApiResponse<Void> authenticate(@RequestBody RenewPasswordUserDto renew) {
-        User user = userService.findByUsername(renew.getUsername());
+        User user = userService.findByUsernameOrEmail(renew.getUsername());
 
         if (user != null) {
             user.setRenewTask(true);
@@ -70,7 +70,7 @@ public class SecurityController {
     private User doAuthenticate(String username, String password) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            return userService.findByUsername(username);
+            return userService.findByUsernameOrEmail(username);
         } catch (Exception ex) {
             log.warn("Invalid Credentials: \n  username: " + username + "\n  password: " + password);
         }
@@ -92,8 +92,8 @@ public class SecurityController {
         if (!userService.isEmailUnique(user.getEmail())) {
             return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "EMAIL-ALREADY-USED", null);
         }
-
-        User findUser = userService.findByUsername(user.getUsername());
+ 
+        User findUser = userService.findByUsernameOrEmail(user.getUsername());
 
         if (findUser == null) {
             User persisted = userService.save(user);

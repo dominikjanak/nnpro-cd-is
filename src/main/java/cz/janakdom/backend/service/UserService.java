@@ -30,7 +30,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username);
+        User user = userDao.findByUsernameOrEmail(username, username);
 
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
@@ -40,8 +40,8 @@ public class UserService implements UserDetailsService {
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
-    public User findByUsername(String username) {
-        return userDao.findByUsername(username);
+    public User findByUsernameOrEmail(String username) {
+        return userDao.findByUsernameOrEmail(username, username);
     }
 
     public boolean isEmailUnique(String email) {
@@ -49,6 +49,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(int id) {
+        // TODO: to asi ne takhle :D
+        // dodělat příznak o smazání
         userDao.deleteById(id);
     }
 
