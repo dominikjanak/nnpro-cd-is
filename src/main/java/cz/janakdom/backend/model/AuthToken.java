@@ -9,5 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthToken {
     private String username;
+    private String role;
+    private String Firstname;
+    private String Surname;
     private String token;
 }

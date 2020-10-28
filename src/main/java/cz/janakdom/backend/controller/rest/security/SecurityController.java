@@ -42,7 +42,8 @@ public class SecurityController {
 
         if (user != null) {
             final String token = jwtUtil.generateToken(user.getUsername());
-            return new ApiResponse<>(200, "SUCCESS", new AuthToken(user.getUsername(), token));
+            AuthToken tokenWithPayload = new AuthToken(user.getUsername(), user.getRole().getName(), user.getFirstname(), user.getSurname(), token);
+            return new ApiResponse<>(200, "SUCCESS",tokenWithPayload );
         }
 
         return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "INVALID-CREDENTIALS", null);
@@ -97,7 +98,8 @@ public class SecurityController {
         if (findUser == null) {
             User persisted = userService.save(user);
             final String token = jwtUtil.generateToken(persisted.getUsername());
-            return new ApiResponse<>(200, "SUCCESS", new AuthToken(persisted.getUsername(), token));
+            AuthToken tokenWithPayload = new AuthToken(persisted.getUsername(), persisted.getRole().getName(), persisted.getFirstname(), persisted.getSurname(), token);
+            return new ApiResponse<>(200, "SUCCESS", tokenWithPayload);
         }
 
         return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "ALREADY-EXISTS", null);
