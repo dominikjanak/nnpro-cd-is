@@ -161,7 +161,8 @@ ALTER TABLE damage
     ADD KEY FKjfqr2g1jaulmprm0qaxbq479d (security_incident_id);
 
 ALTER TABLE damage_type
-    ADD PRIMARY KEY (id);
+    ADD PRIMARY KEY (id),
+    ADD UNIQUE KEY UK_f554f5ddsf5d6d54d (name);
 
 ALTER TABLE fire_brigade_unit
     ADD PRIMARY KEY (id),

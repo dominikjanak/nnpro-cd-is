@@ -5,10 +5,10 @@ import cz.janakdom.backend.model.database.DamageType;
 import cz.janakdom.backend.model.dto.DamageTypeDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service(value = "damageTypeService")
@@ -17,15 +17,18 @@ public class DamageTypeService {
     @Autowired
     private DamageTypeDao damageTypeDao;
 
-    public List<DamageType> findAll(){
-        List<DamageType> damageTypes = new ArrayList<>();
-        damageTypeDao.findAll().iterator().forEachRemaining(damageTypes::add);
-
-        return damageTypes;
+    public Page<DamageType> findAll(Pageable pageable){
+        return damageTypeDao.findAll(pageable);
     }
 
     public DamageType findById(int id){
         Optional<DamageType> damageType = damageTypeDao.findById(id);
+
+        return damageType.orElse(null);
+    }
+
+    public DamageType findByName(String name){
+        Optional<DamageType> damageType = damageTypeDao.findByName(name);
 
         return damageType.orElse(null);
     }
@@ -37,8 +40,8 @@ public class DamageTypeService {
         return damageTypeDao.save(damageType);
     }
 
-    public DamageType update(DamageTypeDto inputModel){
-        Optional<DamageType> damageType = damageTypeDao.findById(inputModel.getId());
+    public DamageType update(Integer id, DamageTypeDto inputModel){
+        Optional<DamageType> damageType = damageTypeDao.findById(id);
 
         if (damageType.isPresent()){
             BeanUtils.copyProperties(inputModel, damageType.get(), "id");
@@ -51,11 +54,16 @@ public class DamageTypeService {
     public boolean delete(int id){
         Optional<DamageType> damageType = damageTypeDao.findById(id);
 
-        if(damageType.isPresent()){
+        //TODO: může být odstrněno, pouze pokud není navázáno na záznam v DB
+        //damageType.getDamages(); // musí být prázdné pole v opačném pípadě je třeba nastavit pouze příznak isDeleted
+        // isDelete není součástí struktury (nutné přidat) jak do entity, tak do resources/db.migration
+
+
+        /*if(damageType.isPresent()){
             damageTypeDao.delete(damageType.get());
 
             return true;
-        }
+        }*/
 
         return false;
     }
