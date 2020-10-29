@@ -39,9 +39,8 @@ public class SecurityController {
     public ApiResponse<AuthToken> authenticate(@RequestBody AuthRequest authRequest) throws AuthenticationException {
 
         User user = doAuthenticate(authRequest.getUsername(), authRequest.getPassword());
-
         if (user != null) {
-            final String token = jwtUtil.generateToken(user.getUsername());
+            final String token = jwtUtil.generateToken(user);
             AuthToken tokenWithPayload = new AuthToken(user.getUsername(), user.getRole().getName(), user.getFirstname(), user.getSurname(), token);
             return new ApiResponse<>(200, "SUCCESS",tokenWithPayload );
         }
@@ -92,12 +91,12 @@ public class SecurityController {
         if (!userService.isEmailUnique(user.getEmail())) {
             return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "EMAIL-ALREADY-USED", null);
         }
- 
+
         User findUser = userService.findByUsernameOrEmail(user.getUsername());
 
         if (findUser == null) {
             User persisted = userService.save(user);
-            final String token = jwtUtil.generateToken(persisted.getUsername());
+            final String token = jwtUtil.generateToken(persisted);
             AuthToken tokenWithPayload = new AuthToken(persisted.getUsername(), persisted.getRole().getName(), persisted.getFirstname(), persisted.getSurname(), token);
             return new ApiResponse<>(200, "SUCCESS", tokenWithPayload);
         }

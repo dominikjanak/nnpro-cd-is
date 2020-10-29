@@ -1,9 +1,7 @@
-package cz.janakdom.backend.controller.rest.external;
+package cz.janakdom.backend.controller.rest.externalDials;
 
 import cz.janakdom.backend.model.ApiResponse;
-import cz.janakdom.backend.model.database.InterventionType;
 import cz.janakdom.backend.model.database.Railroad;
-import cz.janakdom.backend.service.InterventionTypeService;
 import cz.janakdom.backend.service.RailroadService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -16,7 +14,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/railroads")
+@RequestMapping(value = "/api/railroads")
 public class RailroadController {
 
     @Autowired

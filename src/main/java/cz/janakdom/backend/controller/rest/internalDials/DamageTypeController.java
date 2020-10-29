@@ -1,4 +1,4 @@
-package cz.janakdom.backend.controller.rest.crud;
+package cz.janakdom.backend.controller.rest.internalDials;
 
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.DamageType;
@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/damage-types")
+@RequestMapping(value = "api/damage-types")
 public class DamageTypeController {
 
     @Autowired
@@ -30,6 +31,7 @@ public class DamageTypeController {
     public ApiResponse<Page<DamageType>> listDamageTypes(@ApiIgnore() Pageable pageable) {
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageTypeService.findAll(pageable));
     }
+
 
     @GetMapping("/{id}")
     public ApiResponse<DamageType> findDamageType(@PathVariable int id) {

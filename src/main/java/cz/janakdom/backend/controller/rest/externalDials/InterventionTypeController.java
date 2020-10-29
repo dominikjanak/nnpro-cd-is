@@ -1,4 +1,4 @@
-package cz.janakdom.backend.controller.rest.external;
+package cz.janakdom.backend.controller.rest.externalDials;
 
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.InterventionType;
@@ -14,7 +14,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/intervention-types")
+@RequestMapping(value = "/api/intervention-types")
 public class InterventionTypeController {
 
     @Autowired
