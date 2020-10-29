@@ -34,10 +34,14 @@ public class CarriageController {
 
     @PostMapping("/")
     public ApiResponse<Carriage> createDamageType(CarriageDto carriageDto) {
-        ApiResponse<Carriage> validated = this.validInputCarriageDto(carriageDto);
-
-        if(validated != null) {
-            return validated;
+        if (carriageDto.getSerialNumber().isEmpty()) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-SERIAL-NUMBER", null);
+        }
+        if (carriageDto.getProducer().isEmpty()) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-PRODUCER", null);
+        }
+        if (carriageDto.getHomeStation().isEmpty()) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-HOME-STATION", null);
         }
 
         Carriage find = carriageService.findBySerialNumber(carriageDto.getSerialNumber());
@@ -63,6 +67,13 @@ public class CarriageController {
 
     @PutMapping("/{id}")
     public ApiResponse<Carriage> updateCarriage(@PathVariable int id, @RequestBody CarriageUpdateDto carriageDto) {
+        if (carriageDto.getProducer().isEmpty()) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-PRODUCER", null);
+        }
+        if (carriageDto.getHomeStation().isEmpty()) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-HOME-STATION", null);
+        }
+
         Carriage updatedCarriage = carriageService.update(id, carriageDto);
         return new ApiResponse<>(HttpStatus.OK.value(), updatedCarriage == null ? "NOT-FOUND" : "SUCCESS", updatedCarriage);
     }
@@ -71,18 +82,5 @@ public class CarriageController {
     public ApiResponse<Void> deleteCarriage(@PathVariable int id) {
         boolean deleted = carriageService.delete(id);
         return new ApiResponse<>(HttpStatus.OK.value(), deleted ? "SUCCESS" : "INVALID", null);
-    }
-
-    private ApiResponse<Carriage> validInputCarriageDto(CarriageDto carriageDto) {
-        if (carriageDto.getSerialNumber().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-SERIAL-NUMBER", null);
-        }
-        if (carriageDto.getProducer().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-PRODUCER", null);
-        }
-        if (carriageDto.getHomeStation().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-HOME-STATION", null);
-        }
-        return null;
     }
 }
