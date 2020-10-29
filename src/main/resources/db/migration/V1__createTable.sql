@@ -205,7 +205,7 @@ ALTER TABLE premise_incident
 
 ALTER TABLE railroad
     ADD PRIMARY KEY (id),
-    ADD UNIQUE KEY UK_51139lfh21ghkyypeuywqno3 (number);
+    ADD UNIQUE KEY UK_51139lfh21ghkyypeuywqno3 (number, name);
 
 ALTER TABLE region
     ADD PRIMARY KEY (id),

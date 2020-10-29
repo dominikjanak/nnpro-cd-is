@@ -16,6 +16,7 @@ import java.util.List;
 public class InterventionType {
 
     @Id
+    @Getter
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

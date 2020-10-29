@@ -13,6 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity(name = "railroad")
+@Table(uniqueConstraints={
+        @UniqueConstraint(columnNames = {"number", "name"})
+})
 public class Railroad {
 
     @Id
@@ -21,7 +24,7 @@ public class Railroad {
 
     @Getter
     @Setter
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, length = 100)
     private String number;
 
     @Getter
