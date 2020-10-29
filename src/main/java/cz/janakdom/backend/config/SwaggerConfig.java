@@ -47,7 +47,7 @@ public class SwaggerConfig {
                 .securityContexts(Lists.newArrayList(
                         SecurityContext.builder().securityReferences(defaultAuth())
                                 .forPaths(path -> {
-                                    if (path.matches(".*/(auth/login|auth/logout|auth/register)/?")) {
+                                    if (path.matches(".*/(auth/(login|logout|register|me))/?")) {
                                         return false;
                                     }
 
