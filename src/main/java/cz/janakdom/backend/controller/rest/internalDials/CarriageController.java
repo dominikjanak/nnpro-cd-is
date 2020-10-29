@@ -2,11 +2,9 @@ package cz.janakdom.backend.controller.rest.internalDials;
 
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.Carriage;
-import cz.janakdom.backend.model.database.DamageType;
-import cz.janakdom.backend.model.dto.CarriageDto;
-import cz.janakdom.backend.model.dto.DamageTypeDto;
+import cz.janakdom.backend.model.dto.carriage.CarriageDto;
+import cz.janakdom.backend.model.dto.carriage.CarriageUpdateDto;
 import cz.janakdom.backend.service.CarriageService;
-import cz.janakdom.backend.service.DamageTypeService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,13 +62,7 @@ public class CarriageController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<Carriage> updateCarriage(@PathVariable int id, @RequestBody CarriageDto carriageDto) {
-        ApiResponse<Carriage> validated = this.validInputCarriageDto(carriageDto);
-
-        if(validated != null) {
-            return validated;
-        }
-
+    public ApiResponse<Carriage> updateCarriage(@PathVariable int id, @RequestBody CarriageUpdateDto carriageDto) {
         Carriage updatedCarriage = carriageService.update(id, carriageDto);
         return new ApiResponse<>(HttpStatus.OK.value(), updatedCarriage == null ? "NOT-FOUND" : "SUCCESS", updatedCarriage);
     }

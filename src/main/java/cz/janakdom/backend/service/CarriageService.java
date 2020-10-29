@@ -2,7 +2,8 @@ package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.CarriageDao;
 import cz.janakdom.backend.model.database.Carriage;
-import cz.janakdom.backend.model.dto.CarriageDto;
+import cz.janakdom.backend.model.dto.carriage.CarriageDto;
+import cz.janakdom.backend.model.dto.carriage.CarriageUpdateDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,7 @@ public class CarriageService {
         return carriageDao.save(carriage);
     }
 
-    public Carriage update(Integer id, CarriageDto inputModel) {
+    public Carriage update(Integer id, CarriageUpdateDto inputModel) {
         Carriage carriage = this.findById(id);
 
         if (carriage != null) {
