@@ -1,4 +1,4 @@
-package cz.janakdom.backend.controller;
+package cz.janakdom.backend.controller.rest.external;
 
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.InterventionType;
