@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS security_incident;
 DROP TABLE IF EXISTS incident;
 DROP TABLE IF EXISTS damage;
 DROP TABLE IF EXISTS fire_brigade_unit;
+DROP TABLE IF EXISTS report;
 
 /* Create Tables */
 CREATE TABLE area
@@ -156,6 +157,19 @@ CREATE TABLE `user`
     role_id    INT          NOT NULL
 );
 
+CREATE TABLE report
+(
+    id           int(11)      NOT NULL,
+    filename     varchar(50)  NOT NULL,
+    name         varchar(150) NOT NULL,
+    hash         varchar(64)  NOT NULL,
+    description  varchar(500) NOT NULL,
+    is_deleted   bit(1)       NOT NULL,
+    content      mediumblob   NOT NULL,
+    content_type varchar(255) NOT NULL,
+    created      timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 /* Create Indexes */
 ALTER TABLE area
     ADD PRIMARY KEY (id),
@@ -230,9 +244,14 @@ ALTER TABLE user
     ADD KEY FK952enf48r0kesdubmttrmntw (area_id),
     ADD KEY FKn82ha3ccdebhokx3a8fgdqeyy (role_id);
 
+ALTER TABLE report
+    ADD PRIMARY KEY (id),
+    ADD UNIQUE KEY UK_dw69s56z1ds65e9zi1f5s6s4r (filename),
+    ADD UNIQUE KEY UK_fe56sf4e8s9sg6f4sdf65dsez (hash),
+    ADD UNIQUE KEY UK_5s4d5fs54d554fd56sd4fd5d6 (name);
+
 ALTER TABLE area
-    MODIFY id INT NOT NULL AUTO_INCREMENT,
-    AUTO_INCREMENT = 6;
+    MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE attacked_subject
     MODIFY id INT NOT NULL AUTO_INCREMENT;
@@ -262,18 +281,18 @@ ALTER TABLE railroad
     MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE region
-    MODIFY id INT NOT NULL AUTO_INCREMENT,
-    AUTO_INCREMENT = 15;
+    MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE role
-    MODIFY id INT NOT NULL AUTO_INCREMENT,
-    AUTO_INCREMENT = 4;
+    MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE security_incident
     MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE user
-    MODIFY id INT NOT NULL AUTO_INCREMENT,
-    AUTO_INCREMENT = 2;
+    MODIFY id INT NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE report
+    MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 SET FOREIGN_KEY_CHECKS = 1;
