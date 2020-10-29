@@ -133,14 +133,14 @@ CREATE TABLE region
 CREATE TABLE security_incident
 (
     id               INT          NOT NULL,
-    carriage         VARCHAR(150) NOT NULL,
     checked          bit(1)       NOT NULL,
     crime            bit(1)       NOT NULL,
     police           bit(1)       NOT NULL,
     fire_incident_id INT DEFAULT NULL,
     is_deleted       bit(1)       NOT NULL,
     manager          INT          NOT NULL,
-    railroad_id      INT          NOT NULL
+    railroad_id      INT          NOT NULL,
+    carriage_id      INT          NOT NULL
 );
 
 CREATE TABLE `user`
@@ -168,6 +168,16 @@ CREATE TABLE report
     content      mediumblob   NOT NULL,
     content_type varchar(255) NOT NULL,
     created      timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE carriage
+(
+    id            int(11)     NOT NULL,
+    serial_number varchar(50) NOT NULL,
+    producer      varchar(75) NOT NULL,
+    color         varchar(25),
+    home_station  varchar(75) NOT NULL,
+    is_deleted    bit(1)      NOT NULL
 );
 
 /* Create Indexes */
@@ -235,6 +245,7 @@ ALTER TABLE security_incident
     ADD PRIMARY KEY (id),
     ADD KEY FKpxoh5rw2x488b4wgbv3p6ikno (fire_incident_id),
     ADD KEY FK4thyyps7mvgqalsf4ghn7j6nn (manager),
+    ADD KEY FKc5445f5sddfsdf564d5f5sd4f (carriage_id),
     ADD KEY FKc9ieh0f8l0vyrduun4qqswqgc (railroad_id);
 
 ALTER TABLE user
@@ -249,6 +260,10 @@ ALTER TABLE report
     ADD UNIQUE KEY UK_dw69s56z1ds65e9zi1f5s6s4r (filename),
     ADD UNIQUE KEY UK_fe56sf4e8s9sg6f4sdf65dsez (hash),
     ADD UNIQUE KEY UK_5s4d5fs54d554fd56sd4fd5d6 (name);
+
+ALTER TABLE carriage
+    ADD PRIMARY KEY (id),
+    ADD UNIQUE KEY UK_df5r8s546d6s4r8th45df6g4f (serial_number);
 
 ALTER TABLE area
     MODIFY id INT NOT NULL AUTO_INCREMENT;
@@ -293,6 +308,9 @@ ALTER TABLE user
     MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE report
+    MODIFY id INT NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE carriage
     MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 SET FOREIGN_KEY_CHECKS = 1;

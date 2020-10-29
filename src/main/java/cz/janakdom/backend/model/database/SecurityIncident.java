@@ -35,11 +35,6 @@ public class SecurityIncident {
 
     @Getter
     @Setter
-    @Column(nullable = false, length = 150)
-    private String carriage;
-
-    @Getter
-    @Setter
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;
@@ -52,6 +47,11 @@ public class SecurityIncident {
     @Getter
     @OneToOne(mappedBy = "securityIncident")
     private Incident incident;
+
+    @Getter
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "carriage", nullable = false)
+    private Carriage carriage;
 
     @Getter
     @OneToOne(cascade = CascadeType.ALL)
