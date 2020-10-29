@@ -64,6 +64,6 @@ public class DamageTypeController {
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteDamageType(@PathVariable int id) {
         boolean deleted = damageTypeService.delete(id);
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), deleted ? "SUCCESS" : "INVALID", null);
+        return new ApiResponse<>(HttpStatus.OK.value(), deleted ? "SUCCESS" : "INVALID", null);
     }
 }
