@@ -17,53 +17,65 @@ public class DamageTypeService {
     @Autowired
     private DamageTypeDao damageTypeDao;
 
-    public Page<DamageType> findAll(Pageable pageable){
-        return damageTypeDao.findAll(pageable);
+    public Page<DamageType> findAll(Pageable pageable) {
+        return damageTypeDao.findAllByIsDeletedFalse(pageable);
     }
 
-    public DamageType findById(int id){
+    public DamageType findById(int id) {
         Optional<DamageType> damageType = damageTypeDao.findById(id);
 
         return damageType.orElse(null);
     }
 
-    public DamageType findByName(String name){
+    public DamageType findByName(String name) {
         Optional<DamageType> damageType = damageTypeDao.findByName(name);
 
         return damageType.orElse(null);
     }
 
-    public DamageType save(DamageTypeDto inputModel){
-        DamageType damageType = new DamageType();
-        BeanUtils.copyProperties(inputModel, damageType, "id");
+    public DamageType save(DamageTypeDto inputModel) {
+        DamageType damageType = this.findByName(inputModel.getName());
+
+        if (damageType == null) {
+            damageType = new DamageType();
+            BeanUtils.copyProperties(inputModel, damageType, "id");
+        } else {
+            damageType.setIsDeleted(false);
+        }
 
         return damageTypeDao.save(damageType);
     }
 
-    public DamageType update(Integer id, DamageTypeDto inputModel){
-        Optional<DamageType> damageType = damageTypeDao.findById(id);
+    public DamageType update(Integer id, DamageTypeDto inputModel) {
+        DamageType damageType = this.findById(id);
 
-        if (damageType.isPresent()){
-            BeanUtils.copyProperties(inputModel, damageType.get(), "id");
-            damageTypeDao.save(damageType.get());
+        if (damageType != null) {
+            BeanUtils.copyProperties(inputModel, damageType, "id");
+            damageTypeDao.save(damageType);
         }
 
-        return damageType.orElse(null);
+        return damageType;
     }
 
-    public boolean delete(int id){
-        Optional<DamageType> damageType = damageTypeDao.findById(id);
+    public boolean delete(int id) {
+        DamageType damageType = this.findById(id);
 
-        //TODO: může být odstrněno, pouze pokud není navázáno na záznam v DB
-        //damageType.getDamages(); // musí být prázdné pole v opačném pípadě je třeba nastavit pouze příznak isDeleted
-        // isDelete není součástí struktury (nutné přidat) jak do entity, tak do resources/db.migration
-
-
-        /*if(damageType.isPresent()){
-            damageTypeDao.delete(damageType.get());
-
+        if (damageType != null) {
+            // when delete dependency you can delete item
+            /*if (damageType.getIsDeleted()) {
+                return true;
+            }*/
+            if (damageType.getDamages().size() > 0) {
+                if(damageType.getIsDeleted()){
+                    return false;
+                }
+                damageType.setIsDeleted(true);
+                damageTypeDao.save(damageType);
+            } else {
+                damageTypeDao.delete(damageType);
+            }
             return true;
-        }*/
+        }
 
         return false;
     }

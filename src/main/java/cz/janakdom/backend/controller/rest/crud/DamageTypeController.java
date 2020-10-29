@@ -35,7 +35,8 @@ public class DamageTypeController {
             return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
         }
 
-        if (damageTypeService.findByName(damageTypeDto.getName()) != null) {
+        DamageType find = damageTypeService.findByName(damageTypeDto.getName());
+        if (find != null && !find.getIsDeleted()) {
             return new ApiResponse<>(HttpStatus.OK.value(), "ALREADY-EXISTS", null);
         }
 
