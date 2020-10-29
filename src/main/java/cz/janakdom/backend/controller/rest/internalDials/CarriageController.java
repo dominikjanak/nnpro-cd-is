@@ -57,7 +57,7 @@ public class CarriageController {
         return new ApiResponse<>(HttpStatus.OK.value(), carriage == null ? "NOT-EXISTS" : "SUCCESS", carriage);
     }
 
-    @GetMapping("/serial-number/{id}")
+    @GetMapping("/serial-number/{serialNumber}")
     public ApiResponse<Carriage> findCarriageSerialNumber(@PathVariable String serialNumber) {
         Carriage carriage = carriageService.findBySerialNumber(serialNumber);
         return new ApiResponse<>(HttpStatus.OK.value(), carriage == null ? "NOT-EXISTS" : "SUCCESS", carriage);
