@@ -31,8 +31,8 @@ public class InterventionTypeController {
 
     @PostMapping("/reload")
     public ApiResponse<InterventionType> updateInterventionType() {
-        boolean updated = interventionTypeService.reload();
+        boolean reloaded = interventionTypeService.reload();
 
-        return new ApiResponse<>(HttpStatus.OK.value(), updated ? "SUCCESS" : "BAD_REQUEST", null);
+        return new ApiResponse<>(HttpStatus.OK.value(), reloaded ? "SUCCESS" : "BAD_REQUEST", null);
     }
 }
