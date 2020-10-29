@@ -41,7 +41,7 @@ public class SecurityController {
         User user = doAuthenticate(authRequest.getUsername(), authRequest.getPassword());
         if (user != null) {
             final String token = jwtUtil.generateToken(user);
-            AuthToken tokenWithPayload = new AuthToken(user.getUsername(), user.getRole().getName(), user.getFirstname(), user.getSurname(), token);
+            AuthToken tokenWithPayload = new AuthToken(user.getUsername(), user.getFirstname(), user.getSurname(), token);
             return new ApiResponse<>(200, "SUCCESS",tokenWithPayload );
         }
 
@@ -97,7 +97,7 @@ public class SecurityController {
         if (findUser == null) {
             User persisted = userService.save(user);
             final String token = jwtUtil.generateToken(persisted);
-            AuthToken tokenWithPayload = new AuthToken(persisted.getUsername(), persisted.getRole().getName(), persisted.getFirstname(), persisted.getSurname(), token);
+            AuthToken tokenWithPayload = new AuthToken(persisted.getUsername(), persisted.getFirstname(), persisted.getSurname(), token);
             return new ApiResponse<>(200, "SUCCESS", tokenWithPayload);
         }
 
