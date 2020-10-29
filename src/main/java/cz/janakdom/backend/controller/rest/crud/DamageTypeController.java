@@ -4,11 +4,14 @@ import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.DamageType;
 import cz.janakdom.backend.model.dto.DamageTypeDto;
 import cz.janakdom.backend.service.DamageTypeService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @CrossOrigin
 @RestController
@@ -19,7 +22,12 @@ public class DamageTypeController {
     private DamageTypeService damageTypeService;
 
     @GetMapping("/")
-    public ApiResponse<Page<DamageType>> listDamageTypes(Pageable pageable) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", defaultValue = "0"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", defaultValue = "25"),
+            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query")
+    })
+    public ApiResponse<Page<DamageType>> listDamageTypes(@ApiIgnore() Pageable pageable) {
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageTypeService.findAll(pageable));
     }
 
