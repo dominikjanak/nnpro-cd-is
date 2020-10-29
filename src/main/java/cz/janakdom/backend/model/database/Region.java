@@ -1,5 +1,6 @@
 package cz.janakdom.backend.model.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -26,6 +27,12 @@ public class Region {
     @Setter
     @Column(nullable = false, length = 3, unique = true)
     private String abbreviation;
+
+    @Getter
+    @Setter
+    @JsonIgnore
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
 
     @Getter
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

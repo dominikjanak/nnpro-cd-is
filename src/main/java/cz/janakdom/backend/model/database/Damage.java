@@ -1,5 +1,6 @@
 package cz.janakdom.backend.model.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,6 +24,12 @@ public class Damage {
     @Setter
     @Column(nullable = false, length = 100)
     private String attackedObject;
+
+    @Getter
+    @Setter
+    @JsonIgnore
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "security_incident_id", nullable = false)

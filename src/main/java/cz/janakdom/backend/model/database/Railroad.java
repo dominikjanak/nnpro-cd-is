@@ -1,5 +1,6 @@
 package cz.janakdom.backend.model.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -27,6 +28,12 @@ public class Railroad {
     @Setter
     @Column(nullable = false, length = 500)
     private String name;
+
+    @Getter
+    @Setter
+    @JsonIgnore
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
 
     @Getter
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "railroad")

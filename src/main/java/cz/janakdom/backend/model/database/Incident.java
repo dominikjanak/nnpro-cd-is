@@ -1,5 +1,6 @@
 package cz.janakdom.backend.model.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,12 +18,12 @@ public class Incident {
 
     @Getter
     @Setter
-    @Column(nullable = false, length = 50, unique = true)
+    @Column(nullable = false)
     private Date creationDatetime;
 
     @Getter
     @Setter
-    @Column(nullable = false, length = 50, unique = true)
+    @Column(nullable = false, length = 50)
     private String location;
 
     @Getter
@@ -34,6 +35,12 @@ public class Incident {
     @Setter
     @Column(nullable = true, length = 5000)
     private String comment;
+
+    @Getter
+    @Setter
+    @JsonIgnore
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
 
     @Getter
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

@@ -21,14 +21,16 @@ DROP TABLE IF EXISTS fire_brigade_unit;
 /* Create Tables */
 CREATE TABLE area
 (
-    id   INT          NOT NULL,
-    name VARCHAR(150) NOT NULL
+    id         INT          NOT NULL,
+    name       VARCHAR(150) NOT NULL,
+    is_deleted bit(1)       NOT NULL
 );
 
 CREATE TABLE attacked_subject
 (
-    id   INT          NOT NULL,
-    name VARCHAR(200) NOT NULL
+    id         INT          NOT NULL,
+    name       VARCHAR(200) NOT NULL,
+    is_deleted bit(1)       NOT NULL
 );
 
 CREATE TABLE attacked_subjects_incident
@@ -43,32 +45,37 @@ CREATE TABLE damage
     attacked_object      VARCHAR(100) NOT NULL,
     finance_value        FLOAT        NOT NULL,
     damage_type_id       INT          NOT NULL,
-    security_incident_id INT          NOT NULL
+    security_incident_id INT          NOT NULL,
+    is_deleted           bit(1)       NOT NULL
 );
 
 CREATE TABLE railroad
 (
-    id     INT          NOT NULL,
-    name   VARCHAR(500) NOT NULL,
-    number VARCHAR(100) NOT NULL
+    id         INT          NOT NULL,
+    name       VARCHAR(500) NOT NULL,
+    number     VARCHAR(100) NOT NULL,
+    is_deleted bit(1)       NOT NULL
 );
 
 CREATE TABLE premise_incident
 (
-    id    INT      NOT NULL,
-    valid DATETIME NOT NULL
+    id         INT      NOT NULL,
+    valid      DATETIME NOT NULL,
+    is_deleted bit(1)   NOT NULL
 );
 
 CREATE TABLE damage_type
 (
-    id   INT          NOT NULL,
-    name VARCHAR(500) NOT NULL
+    id         INT          NOT NULL,
+    name       VARCHAR(500) NOT NULL,
+    is_deleted bit(1)       NOT NULL
 );
 
 CREATE TABLE fire_brigade_unit
 (
-    id   INT          NOT NULL,
-    name VARCHAR(100) NOT NULL
+    id         INT          NOT NULL,
+    name       VARCHAR(100) NOT NULL,
+    is_deleted bit(1)       NOT NULL
 );
 
 CREATE TABLE fire_brigade_unit_incident
@@ -82,7 +89,8 @@ CREATE TABLE fire_incident
     id                   INT      NOT NULL,
     valid_from           DATETIME NOT NULL,
     valid_to             DATETIME NOT NULL,
-    intervention_type_id INT      NOT NULL
+    intervention_type_id INT      NOT NULL,
+    is_deleted           bit(1)   NOT NULL
 );
 
 CREATE TABLE incident
@@ -94,19 +102,22 @@ CREATE TABLE incident
     note                 VARCHAR(5000) NOT NULL,
     premise_incident_id  INT           DEFAULT NULL,
     region_id            INT           NOT NULL,
-    security_incident_id INT           DEFAULT NULL
+    security_incident_id INT           DEFAULT NULL,
+    is_deleted           bit(1)        NOT NULL
 );
 
 CREATE TABLE intervention_type
 (
-    id   INT          NOT NULL,
-    name VARCHAR(500) NOT NULL
+    id         INT          NOT NULL,
+    name       VARCHAR(500) NOT NULL,
+    is_deleted bit(1)       NOT NULL
 );
 
 CREATE TABLE role
 (
-    id   INT         NOT NULL,
-    name VARCHAR(50) NOT NULL
+    id         INT         NOT NULL,
+    name       VARCHAR(50) NOT NULL,
+    is_deleted bit(1)      NOT NULL
 );
 
 CREATE TABLE region
@@ -114,7 +125,8 @@ CREATE TABLE region
     id           INT          NOT NULL,
     abbreviation VARCHAR(3)   NOT NULL,
     name         VARCHAR(100) NOT NULL,
-    area_id      INT          NOT NULL
+    area_id      INT          NOT NULL,
+    is_deleted   bit(1)       NOT NULL
 );
 
 CREATE TABLE security_incident
@@ -125,6 +137,7 @@ CREATE TABLE security_incident
     crime            bit(1)       NOT NULL,
     police           bit(1)       NOT NULL,
     fire_incident_id INT DEFAULT NULL,
+    is_deleted       bit(1)       NOT NULL,
     manager          INT          NOT NULL,
     railroad_id      INT          NOT NULL
 );
@@ -138,6 +151,7 @@ CREATE TABLE `user`
     surname    VARCHAR(50) DEFAULT NULL,
     username   VARCHAR(35)  NOT NULL,
     renew_task bit(1)       NOT NULL,
+    is_deleted bit(1)       NOT NULL,
     area_id    INT         DEFAULT NULL,
     role_id    INT          NOT NULL
 );
@@ -178,14 +192,13 @@ ALTER TABLE fire_incident
 
 ALTER TABLE incident
     ADD PRIMARY KEY (id),
-    ADD UNIQUE KEY UK_fukb6f57a3snts2lelfacgywd (creation_DATETIME),
-    ADD UNIQUE KEY UK_kslmkh24t90fktr3yprj14cu9 (location),
     ADD KEY FKta941q2qbcndj5dvpn1gye9bh (premise_incident_id),
     ADD KEY FKswtnug2jge1jwblsyh1nqx8py (region_id),
     ADD KEY FKgsuck247mmo2xae15qc6gqe46 (security_incident_id);
 
 ALTER TABLE intervention_type
-    ADD PRIMARY KEY (id);
+    ADD PRIMARY KEY (id),
+    ADD UNIQUE KEY UK_5d54r654sf5e31dsfsdf5f (name);
 
 ALTER TABLE premise_incident
     ADD PRIMARY KEY (id);

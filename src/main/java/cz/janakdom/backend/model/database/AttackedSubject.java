@@ -1,5 +1,6 @@
 package cz.janakdom.backend.model.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -22,6 +23,12 @@ public class AttackedSubject {
     @Setter
     @Column(nullable = false, length = 200, unique = true)
     private String name;
+
+    @Getter
+    @Setter
+    @JsonIgnore
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
 
     @Getter
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

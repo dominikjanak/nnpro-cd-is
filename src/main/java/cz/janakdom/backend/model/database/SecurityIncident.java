@@ -1,5 +1,6 @@
 package cz.janakdom.backend.model.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -36,6 +37,12 @@ public class SecurityIncident {
     @Setter
     @Column(nullable = false, length = 150)
     private String carriage;
+
+    @Getter
+    @Setter
+    @JsonIgnore
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
 
     @Getter
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
