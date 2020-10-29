@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -16,43 +17,30 @@ public class Incident {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private Date creationDatetime;
 
-    @Getter
-    @Setter
     @Column(nullable = false, length = 50)
     private String location;
 
-    @Getter
-    @Setter
     @Column(nullable = false, length = 5000)
     private String note;
 
-    @Getter
-    @Setter
     @Column(nullable = true, length = 5000)
     private String comment;
 
-    @Getter
-    @Setter
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    @Getter
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 
-    @Getter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "securityIncident_id", referencedColumnName = "id")
     private SecurityIncident securityIncident = null;
 
-    @Getter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "premiseIncident_id", referencedColumnName = "id")
     private PremiseIncident premiseIncident = null;

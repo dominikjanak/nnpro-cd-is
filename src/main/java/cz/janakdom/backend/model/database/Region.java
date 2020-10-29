@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -18,28 +19,20 @@ public class Region {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
-    @Setter
     @Column(nullable = false, length = 100, unique = true)
     private String name;
 
-    @Getter
-    @Setter
     @Column(nullable = false, length = 3, unique = true)
     private String abbreviation;
 
-    @Getter
-    @Setter
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    @Getter
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "area_id", nullable = false)
     private Area area;
 
-    @Getter
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "region")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final List<Incident> incidents = new ArrayList<>();

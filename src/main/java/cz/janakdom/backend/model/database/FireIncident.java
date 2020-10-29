@@ -1,11 +1,15 @@
 package cz.janakdom.backend.model.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -16,23 +20,16 @@ public class FireIncident {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private Date validFrom;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private Date validTo;
 
-    @Getter
-    @Setter
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    @Getter
     @OneToOne(mappedBy = "fireIncident")
     private SecurityIncident securityIncident;
 

@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -15,18 +16,12 @@ public class Damage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private float financeValue;
 
-    @Getter
-    @Setter
     @Column(nullable = false, length = 100)
     private String attackedObject;
 
-    @Getter
-    @Setter
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;
@@ -34,7 +29,6 @@ public class Damage {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "security_incident_id", nullable = false)
     private SecurityIncident securityIncident;
-
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "damage_type_id", nullable = false)

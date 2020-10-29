@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /* EXTERNAL */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -16,23 +17,17 @@ import java.util.List;
 public class InterventionType {
 
     @Id
-    @Getter
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
-    @Setter
     @Column(nullable = false, length = 500, unique = true)
     private String name;
 
-    @Getter
-    @Setter
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    @Getter
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "interventionType")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final List<FireIncident> fireIncidents = new ArrayList<>();
