@@ -40,6 +40,7 @@ public class CreateNewCarriageTest {
 
         //act
         newCarriage = carriageService.save(carriageDto);
+
         //assert
         verify(carriageDao, times(1)).findBySerialNumber(anyString());
         assertThat(newCarriage.getIsDeleted()).isFalse();
@@ -67,6 +68,7 @@ public class CreateNewCarriageTest {
 
         //act
         newCarriage = carriageService.save(carriageDto);
+
         //assert
         verify(carriageDao, times(1)).findBySerialNumber(anyString());
         verify(carriageDao, times(1)).save(any(Carriage.class));
