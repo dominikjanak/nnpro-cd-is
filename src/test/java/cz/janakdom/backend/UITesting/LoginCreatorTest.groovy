@@ -5,7 +5,7 @@ import cz.janakdom.backend.Randomizer
 import cz.janakdom.backend.model.database.User
 import cz.janakdom.backend.model.dto.RegisterUserDto
 import cz.janakdom.backend.service.UserService
-import geb.Browser
+//import geb.Browser
 import org.junit.jupiter.api.Test
 import org.openqa.selenium.By
 import org.openqa.selenium.support.ui.ExpectedConditions

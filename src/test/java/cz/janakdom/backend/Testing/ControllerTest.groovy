@@ -5,7 +5,6 @@ import cz.janakdom.backend.model.ApiResponse
 import cz.janakdom.backend.model.AuthRequest
 import cz.janakdom.backend.model.dto.RegisterUserDto
 import cz.janakdom.backend.service.UserService
-import org.junit.Assert
 import org.junit.jupiter.api.Test
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
