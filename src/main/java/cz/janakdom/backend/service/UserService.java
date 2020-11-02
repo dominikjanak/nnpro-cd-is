@@ -1,10 +1,10 @@
 package cz.janakdom.backend.service;
 
-import cz.janakdom.backend.dao.RoleDao;
 import cz.janakdom.backend.dao.UserDao;
 import cz.janakdom.backend.model.database.User;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
 import cz.janakdom.backend.model.dto.UpdateUserDto;
+import cz.janakdom.backend.model.output.AuthenticatedUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -91,5 +91,23 @@ public class UserService implements UserDetailsService {
         newUser.setPassword(encoder.encode(user.getPassword()));
 
         return userDao.save(newUser);
+    }
+
+    public AuthenticatedUser authenticatedUserOutput(User user) {
+        AuthenticatedUser authenticated = new AuthenticatedUser();
+        BeanUtils.copyProperties(user, authenticated, "id", "password", "isDeleted", "email", "responsibleFor", "role", "area");
+        authenticated.setRole(user.getRole().getName());
+        if (authenticated.getFirstname() == null) {
+            authenticated.setFirstname("");
+        }
+        if (authenticated.getSurname() == null) {
+            authenticated.setSurname("");
+        }
+        if (user.getRole().getName().equals("ROLE_ADMIN")) {
+            authenticated.setArea(null);
+        } else {
+            authenticated.setArea(user.getArea());
+        }
+        return authenticated;
     }
 }

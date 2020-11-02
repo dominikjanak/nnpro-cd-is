@@ -29,4 +29,8 @@ public class Role {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final List<User> users = new ArrayList<>();
+
+    public String toString() {
+        return name;
+    }
 }

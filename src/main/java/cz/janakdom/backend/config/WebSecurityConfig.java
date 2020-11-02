@@ -64,6 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests()
                 //.antMatchers("/api/quote/public/{itemId:[0-9]+}").permitAll()
                 .antMatchers("/api/**").authenticated()
+                .antMatchers("/auth/me").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()

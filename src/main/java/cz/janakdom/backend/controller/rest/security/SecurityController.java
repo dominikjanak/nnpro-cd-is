@@ -6,14 +6,15 @@ import cz.janakdom.backend.model.AuthToken;
 import cz.janakdom.backend.model.database.User;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
 import cz.janakdom.backend.model.dto.RenewPasswordUserDto;
+import cz.janakdom.backend.model.output.AuthenticatedUser;
 import cz.janakdom.backend.security.JwtUtil;
+import cz.janakdom.backend.service.SecurityContext;
 import cz.janakdom.backend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,8 @@ public class SecurityController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SecurityContext securityContext;
 
     static boolean isValidEmail(String email) {
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
@@ -38,11 +41,11 @@ public class SecurityController {
     @PostMapping("/login")
     public ApiResponse<AuthToken> authenticate(@RequestBody AuthRequest authRequest) throws AuthenticationException {
 
-        User user = doAuthenticate(authRequest.getUsername(), authRequest.getPassword());
+        User user = securityContext.doAuthenticate(authRequest.getUsername(), authRequest.getPassword());
         if (user != null) {
             final String token = jwtUtil.generateToken(user);
             AuthToken tokenWithPayload = new AuthToken(user.getUsername(), user.getFirstname(), user.getSurname(), token);
-            return new ApiResponse<>(200, "SUCCESS",tokenWithPayload );
+            return new ApiResponse<>(200, "SUCCESS", tokenWithPayload);
         }
 
         return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "INVALID-CREDENTIALS", null);
@@ -61,19 +64,21 @@ public class SecurityController {
         return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
     }
 
+    @PostMapping("/me")
+    public ApiResponse<AuthenticatedUser> authenticate() {
+        User user = securityContext.getAuthenticatedUser();
+
+        if (user != null) {
+            AuthenticatedUser authenticated = userService.authenticatedUserOutput(user);
+            return new ApiResponse<>(200, "SUCCESS", authenticated);
+        }
+
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
+    }
+
     @PostMapping("/logout")
     public ApiResponse<Void> logout() throws AuthenticationException {
         return new ApiResponse<>(200, "success", null);
-    }
-
-    private User doAuthenticate(String username, String password) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            return userService.findByUsernameOrEmail(username);
-        } catch (Exception ex) {
-            log.warn("Invalid Credentials: \n  username: " + username + "\n  password: " + password);
-        }
-        return null;
     }
 
     @PostMapping("/register")
