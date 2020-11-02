@@ -9,10 +9,26 @@ Na adrese [app-cd-is.herokuapp.com](https://app-cd-is.herokuapp.com/) je definov
 - **User:** sa
 - **Pass:** password
 
-## Externí entity
-- Railroad
-- InterventionType
-- AttackedSubject
+## Externí entity - CRUD
+- Railroad - done
+- InterventionType - done
+- AttackedSubject - done
+
+## Interní entity - CRUD
+- Area - fixed R
+- Carriage - done
+- Damage
+- DamageType - done
+- FireBridgeUnit
+- FireIncident
+- Incident
+- PremiseIncident
+- Region - fixed R
+- Report - **partial**
+- Role - done
+- SecurityIncident
+- User
+
 ## Vnitřní implementace
 Stručný popis jednotlivých implementovaných sekcí
 
