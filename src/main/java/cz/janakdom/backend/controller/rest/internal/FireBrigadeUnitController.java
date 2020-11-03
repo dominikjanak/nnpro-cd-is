@@ -1,0 +1,72 @@
+package cz.janakdom.backend.controller.rest.internal;
+
+import cz.janakdom.backend.model.ApiResponse;
+import cz.janakdom.backend.model.database.Carriage;
+import cz.janakdom.backend.model.database.FireBrigadeUnit;
+import cz.janakdom.backend.model.dto.FireBrigadeUnitDto;
+import cz.janakdom.backend.model.dto.carriage.CarriageUpdateDto;
+import cz.janakdom.backend.service.FireBrigadeUnitService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+
+@CrossOrigin
+@RestController
+@RequestMapping(value = "/api/fire-brigade-units")
+public class FireBrigadeUnitController {
+
+    @Autowired
+    private FireBrigadeUnitService fireBrigadeUnitService;
+
+    @GetMapping("/")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", defaultValue = "0"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", defaultValue = "25"),
+            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query")
+    })
+    public ApiResponse<Page<FireBrigadeUnit>> listFireBrigadeUnits(@ApiIgnore() Pageable pageable) {
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireBrigadeUnitService.findAll(pageable));
+    }
+
+    @PostMapping("/")
+    public ApiResponse<FireBrigadeUnit> createFireBrigadeUnit(FireBrigadeUnitDto fireBrigadeUnitDto) {
+        if (fireBrigadeUnitDto.getName().isEmpty()) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+        }
+
+        FireBrigadeUnit find = fireBrigadeUnitService.findByName(fireBrigadeUnitDto.getName());
+
+        if (find != null && !find.getIsDeleted()) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "ALREADY-EXISTS", null);
+        }
+
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireBrigadeUnitService.save(fireBrigadeUnitDto));
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<FireBrigadeUnit> findFireBrigadeUnit(@PathVariable int id) {
+        FireBrigadeUnit fireBrigadeUnit = fireBrigadeUnitService.findById(id);
+        return new ApiResponse<>(HttpStatus.OK.value(), fireBrigadeUnit == null ? "NOT-EXISTS" : "SUCCESS", fireBrigadeUnit);
+    }
+
+    @PutMapping("/{id}")
+    public ApiResponse<FireBrigadeUnit> updateFireBrigadeUnit(@PathVariable int id, @RequestBody FireBrigadeUnitDto fireBrigadeUnitDto) {
+        if (fireBrigadeUnitDto.getName().isEmpty()) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+        }
+
+        FireBrigadeUnit updatedFireBrigadeUnit = fireBrigadeUnitService.update(id, fireBrigadeUnitDto);
+        return new ApiResponse<>(HttpStatus.OK.value(), updatedFireBrigadeUnit == null ? "NOT-FOUND" : "SUCCESS", updatedFireBrigadeUnit);
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteFireBrigadeUnit(@PathVariable int id) {
+        boolean deleted = fireBrigadeUnitService.delete(id);
+        return new ApiResponse<>(HttpStatus.OK.value(), deleted ? "SUCCESS" : "INVALID", null);
+    }
+}
