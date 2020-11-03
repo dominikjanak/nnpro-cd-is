@@ -25,7 +25,9 @@ public class AreaController {
     @GetMapping("/{id}")
     public ApiResponse<Area> findRegionById(@PathVariable int id) {
         Area area = areaService.findById(id);
-
-        return new ApiResponse<>(HttpStatus.OK.value(), area == null ? "NOT-EXISTS" : "SUCCESS", area);
+        if (area != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", area);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 }

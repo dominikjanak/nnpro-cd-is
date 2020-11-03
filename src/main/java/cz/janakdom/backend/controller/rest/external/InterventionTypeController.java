@@ -33,14 +33,18 @@ public class InterventionTypeController {
     @GetMapping("/{id}")
     public ApiResponse<InterventionType> findInterventionType(@PathVariable int id) {
         InterventionType interventionType = interventionTypeService.findById(id);
-
-        return new ApiResponse<>(HttpStatus.OK.value(), interventionType == null ? "NOT-EXISTS" : "SUCCESS", interventionType);
+        if (interventionType != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", interventionType);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @PostMapping("/reload")
     public ApiResponse<InterventionType> updateInterventionType() {
         boolean reloaded = interventionTypeService.reload();
-
-        return new ApiResponse<>(HttpStatus.OK.value(), reloaded ? "SUCCESS" : "BAD_REQUEST", null);
+        if (reloaded) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
     }
 }

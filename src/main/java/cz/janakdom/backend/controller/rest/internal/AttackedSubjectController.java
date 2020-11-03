@@ -34,13 +34,13 @@ public class AttackedSubjectController {
     @PostMapping("/")
     public ApiResponse<AttackedSubject> createAttackedSubject(AttackedSubjectDto attackedSubjectDto) {
         if (attackedSubjectDto.getName().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }
 
         AttackedSubject find = attackedSubjectService.findByName(attackedSubjectDto.getName());
 
         if (find != null && !find.getIsDeleted()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "ALREADY-EXISTS", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "ALREADY-EXISTS", null);
         }
 
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", attackedSubjectService.save(attackedSubjectDto));
@@ -49,22 +49,30 @@ public class AttackedSubjectController {
     @GetMapping("/{id}")
     public ApiResponse<AttackedSubject> findAttackedSubject(@PathVariable int id) {
         AttackedSubject attackedSubject = attackedSubjectService.findById(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), attackedSubject == null ? "NOT-EXISTS" : "SUCCESS", attackedSubject);
+        if (attackedSubject != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", attackedSubject);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @PutMapping("/{id}")
     public ApiResponse<AttackedSubject> updateAttackedSubject(@PathVariable int id, @RequestBody AttackedSubjectDto attackedSubjectDto) {
         if (attackedSubjectDto.getName().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }
 
         AttackedSubject updatedAttackedSubject = attackedSubjectService.update(id, attackedSubjectDto);
-        return new ApiResponse<>(HttpStatus.OK.value(), updatedAttackedSubject == null ? "NOT-FOUND" : "SUCCESS", updatedAttackedSubject);
+        if (updatedAttackedSubject != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", updatedAttackedSubject);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteAttackedSubject(@PathVariable int id) {
-        boolean deleted = attackedSubjectService.delete(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), deleted ? "SUCCESS" : "INVALID", null);
+        if (attackedSubjectService.delete(id)) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
     }
 }

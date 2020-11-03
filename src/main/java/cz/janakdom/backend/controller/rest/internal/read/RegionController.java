@@ -25,15 +25,19 @@ public class RegionController {
     @GetMapping("/{id}")
     public ApiResponse<Region> findRegionById(@PathVariable int id) {
         Region region = regionService.findById(id);
-
-        return new ApiResponse<>(HttpStatus.OK.value(), region == null ? "NOT-EXISTS" : "SUCCESS", region);
+        if (region != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", region);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @GetMapping("/abbreviation/{abbreviation}")
     public ApiResponse<Region> findRegionByAbbreviation(@PathVariable String abbreviation) {
         Region region = regionService.findByAbbreviation(abbreviation);
-
-        return new ApiResponse<>(HttpStatus.OK.value(), region == null ? "NOT-EXISTS" : "SUCCESS", region);
+        if (region != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 }
 

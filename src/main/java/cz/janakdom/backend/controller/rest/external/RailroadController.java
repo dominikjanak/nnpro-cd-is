@@ -33,14 +33,18 @@ public class RailroadController {
     @GetMapping("/{id}")
     public ApiResponse<Railroad> findInterventionType(@PathVariable int id) {
         Railroad railroad = railroadService.findById(id);
-
-        return new ApiResponse<>(HttpStatus.OK.value(), railroad == null ? "NOT-EXISTS" : "SUCCESS", railroad);
+        if (railroad != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", railroad);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @PostMapping("/reload")
     public ApiResponse<Railroad> updateInterventionType() {
         boolean reloaded = railroadService.reload();
-
-        return new ApiResponse<>(HttpStatus.OK.value(), reloaded ? "SUCCESS" : "BAD_REQUEST", null);
+        if (reloaded) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
     }
 }

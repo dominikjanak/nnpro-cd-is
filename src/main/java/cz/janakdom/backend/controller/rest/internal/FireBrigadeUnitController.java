@@ -36,13 +36,13 @@ public class FireBrigadeUnitController {
     @PostMapping("/")
     public ApiResponse<FireBrigadeUnit> createFireBrigadeUnit(FireBrigadeUnitDto fireBrigadeUnitDto) {
         if (fireBrigadeUnitDto.getName().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }
 
         FireBrigadeUnit find = fireBrigadeUnitService.findByName(fireBrigadeUnitDto.getName());
 
         if (find != null && !find.getIsDeleted()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "ALREADY-EXISTS", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "ALREADY-EXISTS", null);
         }
 
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireBrigadeUnitService.save(fireBrigadeUnitDto));
@@ -51,22 +51,30 @@ public class FireBrigadeUnitController {
     @GetMapping("/{id}")
     public ApiResponse<FireBrigadeUnit> findFireBrigadeUnit(@PathVariable int id) {
         FireBrigadeUnit fireBrigadeUnit = fireBrigadeUnitService.findById(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), fireBrigadeUnit == null ? "NOT-EXISTS" : "SUCCESS", fireBrigadeUnit);
+        if(fireBrigadeUnit != null){
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireBrigadeUnit);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @PutMapping("/{id}")
     public ApiResponse<FireBrigadeUnit> updateFireBrigadeUnit(@PathVariable int id, @RequestBody FireBrigadeUnitDto fireBrigadeUnitDto) {
         if (fireBrigadeUnitDto.getName().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }
 
         FireBrigadeUnit updatedFireBrigadeUnit = fireBrigadeUnitService.update(id, fireBrigadeUnitDto);
-        return new ApiResponse<>(HttpStatus.OK.value(), updatedFireBrigadeUnit == null ? "NOT-FOUND" : "SUCCESS", updatedFireBrigadeUnit);
+        if(updatedFireBrigadeUnit != null){
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", updatedFireBrigadeUnit);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteFireBrigadeUnit(@PathVariable int id) {
-        boolean deleted = fireBrigadeUnitService.delete(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), deleted ? "SUCCESS" : "INVALID", null);
+        if (fireBrigadeUnitService.delete(id)) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
     }
 }

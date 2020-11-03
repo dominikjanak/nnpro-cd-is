@@ -31,22 +31,24 @@ public class DamageTypeController {
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageTypeService.findAll(pageable));
     }
 
-
     @GetMapping("/{id}")
     public ApiResponse<DamageType> findDamageType(@PathVariable int id) {
         DamageType damageType = damageTypeService.findById(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), damageType == null ? "NOT-EXISTS" : "SUCCESS", damageType);
+        if (damageType != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageType);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "NOT-FOUND", null);
     }
 
     @PostMapping("/")
     public ApiResponse<DamageType> createDamageType(DamageTypeDto damageTypeDto) {
         if (damageTypeDto.getName().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }
 
         DamageType find = damageTypeService.findByName(damageTypeDto.getName());
         if (find != null && !find.getIsDeleted()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "ALREADY-EXISTS", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "ALREADY-EXISTS", null);
         }
 
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageTypeService.save(damageTypeDto));
@@ -55,16 +57,21 @@ public class DamageTypeController {
     @PutMapping("/{id}")
     public ApiResponse<DamageType> updateDamageType(@PathVariable int id, @RequestBody DamageTypeDto damageTypeDto) {
         if (damageTypeDto.getName().isEmpty()) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }
 
         DamageType updatedDamageType = damageTypeService.update(id, damageTypeDto);
-        return new ApiResponse<>(HttpStatus.OK.value(), updatedDamageType == null ? "NOT-FOUND" : "SUCCESS", updatedDamageType);
+        if (updatedDamageType != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", updatedDamageType);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteDamageType(@PathVariable int id) {
-        boolean deleted = damageTypeService.delete(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), deleted ? "SUCCESS" : "INVALID", null);
+        if (damageTypeService.delete(id)) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
     }
 }

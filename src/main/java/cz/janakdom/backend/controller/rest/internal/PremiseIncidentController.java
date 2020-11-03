@@ -19,7 +19,7 @@ public class PremiseIncidentController {
     @PostMapping("/")
     public ApiResponse<PremiseIncident> createPremiseIncident(PremiseIncidentDto premiseIncidentDto) {
         if (premiseIncidentDto.getValid() == null) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-VALID", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-VALID", null);
         }
 
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", premiseIncidentService.save(premiseIncidentDto));
@@ -28,22 +28,30 @@ public class PremiseIncidentController {
     @GetMapping("/{id}")
     public ApiResponse<PremiseIncident> findPremiseIncident(@PathVariable int id) {
         PremiseIncident premiseIncident = premiseIncidentService.findById(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), premiseIncident == null ? "NOT-EXISTS" : "SUCCESS", premiseIncident);
+        if(premiseIncident != null){
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", premiseIncident);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @PutMapping("/{id}")
     public ApiResponse<PremiseIncident> updatePremiseIncident(@PathVariable int id, @RequestBody PremiseIncidentDto premiseIncidentDto) {
         if (premiseIncidentDto.getValid() == null) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "EMPTY-NAME", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }
 
         PremiseIncident updatedPremiseIncident = premiseIncidentService.update(id, premiseIncidentDto);
-        return new ApiResponse<>(HttpStatus.OK.value(), updatedPremiseIncident == null ? "NOT-FOUND" : "SUCCESS", updatedPremiseIncident);
+        if(updatedPremiseIncident != null){
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", updatedPremiseIncident);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deletePremiseIncident(@PathVariable int id) {
-        boolean deleted = premiseIncidentService.delete(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), deleted ? "SUCCESS" : "INVALID", null);
+        if (premiseIncidentService.delete(id)) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
     }
 }
