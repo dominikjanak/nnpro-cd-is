@@ -31,6 +31,7 @@ public class Region {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "area_id", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Area area;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "region")

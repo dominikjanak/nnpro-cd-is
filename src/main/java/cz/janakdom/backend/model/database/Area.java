@@ -31,6 +31,5 @@ public class Area {
     private final List<User> users = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final List<Region> regions = new ArrayList<>();
 }
