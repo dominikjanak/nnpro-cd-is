@@ -52,7 +52,7 @@ public class Incident {
         return this;
     }
 
-    public Incident setpremiseIncident(PremiseIncident premiseIncident) throws Exception {
+    public Incident setPremiseIncident(PremiseIncident premiseIncident) throws Exception {
         if (this.securityIncident != null)
             throw new Exception("The premise incident cannot be set because the security incident is assigned!");
         this.premiseIncident = premiseIncident;

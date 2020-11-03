@@ -1,13 +1,16 @@
 package cz.janakdom.backend.model.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -36,6 +39,9 @@ public class FireIncident {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "intervention_type_id", nullable = false)
     private InterventionType interventionType;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "fireIncident")
+    private final List<Damage> damages = new ArrayList<>();
 
     public Boolean setValidRange(Date from, Date to) {
         if (from.before(to)) {

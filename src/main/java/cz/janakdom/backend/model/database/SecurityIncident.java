@@ -66,6 +66,5 @@ public class SecurityIncident {
     private Railroad railroad;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "securityIncident")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final List<Damage> damages = new ArrayList<>();
 }
