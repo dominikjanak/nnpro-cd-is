@@ -1,6 +1,7 @@
 package cz.janakdom.backend.model.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,6 +25,7 @@ public class PremiseIncident {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToOne(mappedBy = "premiseIncident")
     private Incident incident;
 }
