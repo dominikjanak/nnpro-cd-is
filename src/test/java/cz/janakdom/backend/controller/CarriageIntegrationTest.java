@@ -1,7 +1,7 @@
 package cz.janakdom.backend.controller;
 
 import cz.janakdom.backend.Creator;
-import cz.janakdom.backend.controller.rest.internalDials.CarriageController;
+import cz.janakdom.backend.controller.rest.internal.CarriageController;
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.Carriage;
 import cz.janakdom.backend.model.dto.carriage.CarriageDto;
@@ -43,7 +43,7 @@ public class CarriageIntegrationTest {
     @Test
     public void findNonExistingEmptyDb() {
         ApiResponse<Carriage> response = carriageController.findCarriage(1);
-        ApiResponse<Carriage> expected = new ApiResponse<>(200, "NOT-EXISTS", null);
+        ApiResponse<Carriage> expected = new ApiResponse<>(404, "NOT-FOUND", null);
 
         Assertions.assertThat(response).isEqualTo(expected);
     }
@@ -53,7 +53,7 @@ public class CarriageIntegrationTest {
         Carriage carriage = creator.saveEntity(new Carriage());
 
         ApiResponse<Carriage> response = carriageController.findCarriage(carriage.getId() + 1);
-        ApiResponse<Carriage> expected = new ApiResponse<>(200, "NOT-EXISTS", null);
+        ApiResponse<Carriage> expected = new ApiResponse<>(404, "NOT-FOUND", null);
 
         Assertions.assertThat(response).isEqualTo(expected);
     }
@@ -105,8 +105,9 @@ public class CarriageIntegrationTest {
         ApiResponse<Carriage> response = carriageController.findCarriage(findById);
         ApiResponse<Page<Carriage>> responseAll = carriageController.listCarriages(null);
 
-        String expectedStatus = expected == null ? "NOT-EXISTS" : "SUCCESS";
-        ApiResponse<Carriage> expectedResponse = new ApiResponse<>(200, expectedStatus, expected);
+        int expectedCode = expected == null ? 404 : 200;
+        String expectedStatus = expected == null ? "NOT-FOUND" : "SUCCESS";
+        ApiResponse<Carriage> expectedResponse = new ApiResponse<>(expectedCode, expectedStatus, expected);
         ApiResponse<Page<Carriage>> expectedAllResponse = new ApiResponse<>(200, "SUCCESS", new PageImpl<>(expectedAll));
 
         Assertions.assertThat(response).isEqualTo(expectedResponse);
