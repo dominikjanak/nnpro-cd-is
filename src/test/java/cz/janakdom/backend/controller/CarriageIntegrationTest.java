@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,56 +30,6 @@ public class CarriageIntegrationTest {
 
     @Autowired
     private CarriageController carriageController;
-
-    @Test
-    public void find() {
-        Carriage carriage = creator.saveEntity(new Carriage());
-
-        ApiResponse<Carriage> response = carriageController.findCarriage(carriage.getId());
-        ApiResponse<Carriage> expected = new ApiResponse<>(200, "SUCCESS", carriage);
-
-        Assertions.assertThat(response).isEqualTo(expected);
-    }
-
-    @Test
-    public void findNonExistingEmptyDb() {
-        ApiResponse<Carriage> response = carriageController.findCarriage(1);
-        ApiResponse<Carriage> expected = new ApiResponse<>(404, "NOT-FOUND", null);
-
-        Assertions.assertThat(response).isEqualTo(expected);
-    }
-
-    @Test
-    public void findNonExisting() {
-        Carriage carriage = creator.saveEntity(new Carriage());
-
-        ApiResponse<Carriage> response = carriageController.findCarriage(carriage.getId() + 1);
-        ApiResponse<Carriage> expected = new ApiResponse<>(404, "NOT-FOUND", null);
-
-        Assertions.assertThat(response).isEqualTo(expected);
-    }
-
-    @Test
-    public void findListEmptyDb() {
-        ApiResponse<Page<Carriage>> response = carriageController.listCarriages(null);
-        ApiResponse<Page<Carriage>> expected = new ApiResponse<>(200, "SUCCESS", Page.empty());
-
-        Assertions.assertThat(response).isEqualTo(expected);
-    }
-
-    @Test
-    public void findList() {
-        List<Carriage> carriages = Arrays.asList(
-                creator.saveEntity(new Carriage(1, "A")),
-                creator.saveEntity(new Carriage(2, "B")),
-                creator.saveEntity(new Carriage(3, "C"))
-        );
-
-        ApiResponse<Page<Carriage>> response = carriageController.listCarriages(null);
-        ApiResponse<Page<Carriage>> expected = new ApiResponse<>(200, "SUCCESS", new PageImpl<>(carriages));
-
-        Assertions.assertThat(response).isEqualTo(expected);
-    }
 
     @Test
     public void crud() {
@@ -98,6 +49,90 @@ public class CarriageIntegrationTest {
         verifyCrud(carriage1.getId(), null, Arrays.asList(carriage2)); // Deleted item.
     }
 
+    @Test
+    public void deleteNotFound() {
+        Carriage carriage = creator.saveEntity(new Carriage());
+
+        ApiResponse<Void> response = carriageController.deleteCarriage(carriage.getId() * 2);
+        ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
+        // TODO: Change expected 400 INVALID to 404 NOT-FOUND?
+        Assertions.assertThat(response).isEqualTo(expected);
+
+        verifyCrud(carriage.getId(), carriage, Arrays.asList(carriage)); // There should be still ona carriage in DB.
+    }
+
+    @Test
+    public void updateNotFound() {
+        Carriage carriage = creator.saveEntity(new Carriage());
+
+        ApiResponse<Carriage> response = carriageController.updateCarriage(carriage.getId() * 2, new CarriageUpdateDto("A", "B", "C"));
+        ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+
+        Assertions.assertThat(response).isEqualTo(expected);
+
+        verifyCrud(carriage.getId(), carriage, Arrays.asList(carriage)); // There should be non-updated carriage in DB.
+    }
+
+    @Test
+    public void create() {
+        CarriageDto carriageDto1 = new CarriageDto(null, "B", "C", "D");
+        CarriageDto carriageDto2 = new CarriageDto("B", null, "D", "E");
+        CarriageDto carriageDto3 = new CarriageDto("C", "D", "E", null);
+        CarriageDto carriageDto4 = new CarriageDto("D", "E", null, "G");
+        CarriageDto carriageDto5 = new CarriageDto("D", "F", "G", "H");
+
+        ApiResponse<Carriage> response1 = carriageController.createCarriage(carriageDto1);
+        ApiResponse<Carriage> response2 = carriageController.createCarriage(carriageDto2);
+        ApiResponse<Carriage> response3 = carriageController.createCarriage(carriageDto3);
+        ApiResponse<Carriage> response4 = carriageController.createCarriage(carriageDto4);
+        ApiResponse<Carriage> response5 = carriageController.createCarriage(carriageDto5);
+
+        ApiResponse<Carriage> expected1 = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-SERIAL-NUMBER", null);
+        ApiResponse<Carriage> expected2 = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-PRODUCER", null);
+        ApiResponse<Carriage> expected3 = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-HOME-STATION", null);
+        ApiResponse<Carriage> expected4 = new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", response4.getResult());
+        ApiResponse<Carriage> expected5 = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "ALREADY-EXISTS", null);
+
+        Assertions.assertThat(response1).isEqualTo(expected1);
+        Assertions.assertThat(response2).isEqualTo(expected2);
+        Assertions.assertThat(response3).isEqualTo(expected3);
+        Assertions.assertThat(response4).isEqualTo(expected4);
+        Assertions.assertThat(response5).isEqualTo(expected5);
+
+        Carriage carriage = response4.getResult();
+        verifyCrud(carriage.getId(), carriage, Arrays.asList(carriage)); // There should be single carriage in DB.
+    }
+
+    @Test
+    public void update() {
+        Carriage carriage1 = creator.saveEntity(new Carriage(1, "A"));
+        CarriageUpdateDto updated = new CarriageUpdateDto(null, carriage1.getColor(), carriage1.getHomeStation());
+
+        ApiResponse<Carriage> response = carriageController.updateCarriage(carriage1.getId(), updated);
+        ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-PRODUCER", null);
+
+        Assertions.assertThat(response).isEqualTo(expected); // Update should not be performed because of null producer.
+
+        updated.setProducer(carriage1.getProducer());
+        updated.setHomeStation("");
+
+        response = carriageController.updateCarriage(carriage1.getId(), updated);
+        expected = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-HOME-STATION", null);
+
+        Assertions.assertThat(response).isEqualTo(expected); // Update should not be performed because empty home station.
+
+        updated.setHomeStation(carriage1.getHomeStation());
+        updated.setColor(null);
+        carriage1.setColor(null);
+
+        response = carriageController.updateCarriage(carriage1.getId(), updated);
+        expected = new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", carriage1);
+
+        Assertions.assertThat(response).isEqualTo(expected); // Update should be performed.
+
+        verifyCrud(carriage1.getId(), carriage1, Arrays.asList(carriage1));
+    }
+
     /**
      * Test findCarriage, listCarriages and findCarriageSerialNumber methods for given carriages.
      */
@@ -108,14 +143,14 @@ public class CarriageIntegrationTest {
         int expectedCode = expected == null ? 404 : 200;
         String expectedStatus = expected == null ? "NOT-FOUND" : "SUCCESS";
         ApiResponse<Carriage> expectedResponse = new ApiResponse<>(expectedCode, expectedStatus, expected);
-        ApiResponse<Page<Carriage>> expectedAllResponse = new ApiResponse<>(200, "SUCCESS", new PageImpl<>(expectedAll));
+        ApiResponse<Page<Carriage>> expectedAllResponse = new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", new PageImpl<>(expectedAll));
 
         Assertions.assertThat(response).isEqualTo(expectedResponse);
         Assertions.assertThat(responseAll).isEqualTo(expectedAllResponse);
 
         if (expected != null) {
             ApiResponse<Carriage> responseSerialNumber = carriageController.findCarriageSerialNumber(expected.getSerialNumber());
-            ApiResponse<Carriage> expectedSerialNumber = new ApiResponse<>(200, "SUCCESS", expected);
+            ApiResponse<Carriage> expectedSerialNumber = new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", expected);
 
             Assertions.assertThat(responseSerialNumber).isEqualTo(expectedSerialNumber);
         }
