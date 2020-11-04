@@ -34,13 +34,13 @@ public class CarriageController {
 
     @PostMapping("/")
     public ApiResponse<Carriage> createCarriage(CarriageDto carriageDto) {
-        if (carriageDto.getSerialNumber().isEmpty()) {
+        if (carriageDto.getSerialNumber() == null || carriageDto.getSerialNumber().isEmpty()) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-SERIAL-NUMBER", null);
         }
-        if (carriageDto.getProducer().isEmpty()) {
+        if (carriageDto.getProducer() == null || carriageDto.getProducer().isEmpty()) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-PRODUCER", null);
         }
-        if (carriageDto.getHomeStation().isEmpty()) {
+        if (carriageDto.getHomeStation() == null || carriageDto.getHomeStation().isEmpty()) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-HOME-STATION", null);
         }
 
@@ -72,10 +72,10 @@ public class CarriageController {
 
     @PutMapping("/{id}")
     public ApiResponse<Carriage> updateCarriage(@PathVariable int id, @RequestBody CarriageUpdateDto carriageDto) {
-        if (carriageDto.getProducer().isEmpty()) {
+        if (carriageDto.getProducer() == null || carriageDto.getProducer().isEmpty()) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-PRODUCER", null);
         }
-        if (carriageDto.getHomeStation().isEmpty()) {
+        if (carriageDto.getHomeStation() == null || carriageDto.getHomeStation().isEmpty()) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-HOME-STATION", null);
         }
 
