@@ -110,4 +110,10 @@ public class UserService implements UserDetailsService {
         }
         return authenticated;
     }
+
+    public void updatePass(User user, String newPassword) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(newPassword));
+        userDao.save(user);
+    }
 }
