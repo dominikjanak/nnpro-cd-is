@@ -11,8 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -143,7 +141,7 @@ public class CarriageIntegrationTest {
         int expectedCode = expected == null ? 404 : 200;
         String expectedStatus = expected == null ? "NOT-FOUND" : "SUCCESS";
         ApiResponse<Carriage> expectedResponse = new ApiResponse<>(expectedCode, expectedStatus, expected);
-        ApiResponse<Page<Carriage>> expectedAllResponse = new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", new PageImpl<>(expectedAll));
+        ApiResponse<List<Carriage>> expectedAllResponse = new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", expectedAll);
 
         Assertions.assertThat(response).isEqualTo(expectedResponse);
         Assertions.assertThat(responseAll).isEqualTo(expectedAllResponse);
