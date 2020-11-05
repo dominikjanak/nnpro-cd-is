@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping(value = "api/damage-types")
@@ -22,13 +24,8 @@ public class DamageTypeController {
     private DamageTypeService damageTypeService;
 
     @GetMapping("/")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", defaultValue = "0"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", defaultValue = "25"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query")
-    })
-    public ApiResponse<Page<DamageType>> listDamageTypes(@ApiIgnore() Pageable pageable) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageTypeService.findAll(pageable));
+    public ApiResponse<List<DamageType>> listDamageTypes() {
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageTypeService.findAll());
     }
 
     @GetMapping("/{id}")

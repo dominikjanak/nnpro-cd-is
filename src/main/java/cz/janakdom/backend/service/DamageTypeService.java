@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service(value = "damageTypeService")
@@ -17,8 +18,8 @@ public class DamageTypeService {
     @Autowired
     private DamageTypeDao damageTypeDao;
 
-    public Page<DamageType> findAll(Pageable pageable) {
-        return damageTypeDao.findAllByIsDeletedFalse(pageable);
+    public List<DamageType> findAll() {
+        return damageTypeDao.findAllByIsDeletedFalse();
     }
 
     public DamageType findById(int id) {

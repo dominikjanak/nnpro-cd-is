@@ -14,22 +14,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/api/carriages")
+@RequestMapping(value = "/carriages")
 public class CarriageController {
 
     @Autowired
     private CarriageService carriageService;
 
     @GetMapping("/")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", defaultValue = "0"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", defaultValue = "25"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query")
-    })
-    public ApiResponse<Page<Carriage>> listCarriages(@ApiIgnore() Pageable pageable) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", carriageService.findAll(pageable));
+    public ApiResponse<List<Carriage>> listCarriages() {
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", carriageService.findAll());
     }
 
     @PostMapping("/")

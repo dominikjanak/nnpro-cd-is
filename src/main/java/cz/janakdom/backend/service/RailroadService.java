@@ -20,8 +20,8 @@ public class RailroadService {
     @Autowired
     private ExternalDataService externalDataService;
 
-    public Page<Railroad> findAll(Pageable pageable) {
-        return railroadDao.findAllByIsDeletedFalse(pageable);
+    public List<Railroad> findAll() {
+        return railroadDao.findAllByIsDeletedFalse();
     }
 
     public Railroad findById(int id) {

@@ -19,9 +19,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PremiseIncidentDto {
-
     // Incident
-    @JsonSerialize(using = JodaSerializers.LocalDateTimeSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Prague")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationDatetime;
     private String location;
     private String note;
@@ -29,6 +29,5 @@ public class PremiseIncidentDto {
     private Integer region_id;
 
     // Premise incident
-    @JsonSerialize(using = JodaSerializers.LocalDateTimeSerializer.class)
     private LocalDateTime valid = null;
 }

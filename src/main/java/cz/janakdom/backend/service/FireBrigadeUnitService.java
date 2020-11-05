@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service(value = "fireBrigadeUnitService")
@@ -21,8 +22,8 @@ public class FireBrigadeUnitService {
     @Autowired
     private FireBrigadeUnitDao fireBrigadeUnitDao;
 
-    public Page<FireBrigadeUnit> findAll(Pageable pageable) {
-        return fireBrigadeUnitDao.findAllByIsDeletedFalse(pageable);
+    public List<FireBrigadeUnit> findAll() {
+        return fireBrigadeUnitDao.findAllByIsDeletedFalse();
     }
 
     public FireBrigadeUnit findById(Integer id) {

@@ -11,6 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FireBrigadeUnitDao extends JpaRepository<FireBrigadeUnit, Integer> {
-    Page<FireBrigadeUnit> findAllByIsDeletedFalse(Pageable pageable);
+    List<FireBrigadeUnit> findAllByIsDeletedFalse();
     Optional<FireBrigadeUnit> findByName(String name);
 }
