@@ -4,6 +4,7 @@ import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.AuthRequest;
 import cz.janakdom.backend.model.AuthToken;
 import cz.janakdom.backend.model.database.User;
+import cz.janakdom.backend.model.dto.ChangePasswordDto;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
 import cz.janakdom.backend.model.dto.RenewPasswordUserDto;
 import cz.janakdom.backend.model.output.AuthenticatedUser;
@@ -107,5 +108,19 @@ public class SecurityController {
         }
 
         return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "ALREADY-EXISTS", null);
+    }
+
+    @PostMapping("/change-password")
+    public ApiResponse<Void> processPasswordChange(@RequestBody ChangePasswordDto changePassword){
+        User user = securityContext.getAuthenticatedUser();
+        User passwordUser = securityContext.doAuthenticate(user.getUsername(), changePassword.getOldPassword());
+
+        if(passwordUser == null)
+        {
+            return new ApiResponse<Void>(HttpStatus.FORBIDDEN.value(), "FORBIDDEN", null);
+        }
+
+        userService.updatePass(passwordUser, changePassword.getNewPassword());
+        return new ApiResponse<Void>(HttpStatus.OK.value(), "SUCCESS", null);
     }
 }

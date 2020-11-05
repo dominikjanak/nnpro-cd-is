@@ -37,5 +37,12 @@ public class Carriage {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "carriage")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OrderColumn(name="INDEX") // Because persistentBag.equals(persistentBag) returns false even if both objects are empty.
     private final List<SecurityIncident> securityIncidents = new ArrayList<>();
+
+    public Carriage(int id, String serialNumber) {
+        this.id = id;
+        this.serialNumber = serialNumber;
+    }
+
 }
