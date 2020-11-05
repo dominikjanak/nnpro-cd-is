@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service(value = "premiseIncidentService")
@@ -16,8 +17,11 @@ public class PremiseIncidentService {
     @Autowired
     private PremiseIncidentDao premiseIncidentDao;
 
-    public Page<PremiseIncident> findAll(Pageable pageable) {
-        return premiseIncidentDao.findAllByIsDeletedFalse(pageable);
+    @Autowired
+    private RegionService regionService;
+
+    public List<PremiseIncident> findAll() {
+        return premiseIncidentDao.findAllByIsDeletedFalse();
     }
 
     public PremiseIncident findById(Integer id) {

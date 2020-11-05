@@ -20,8 +20,8 @@ public class InterventionTypeService {
     @Autowired
     private ExternalDataService externalDataService;
 
-    public Page<InterventionType> findAll(Pageable pageable) {
-        return interventionTypeDao.findAllByIsDeletedFalse(pageable);
+    public List<InterventionType> findAll() {
+        return interventionTypeDao.findAllByIsDeletedFalse();
     }
 
     public InterventionType findById(int id) {

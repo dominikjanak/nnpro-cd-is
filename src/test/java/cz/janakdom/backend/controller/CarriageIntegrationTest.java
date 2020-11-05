@@ -138,7 +138,7 @@ public class CarriageIntegrationTest {
      */
     private void verifyCrud(int findById, Carriage expected, List<Carriage> expectedAll) {
         ApiResponse<Carriage> response = carriageController.findCarriage(findById);
-        ApiResponse<Page<Carriage>> responseAll = carriageController.listCarriages(null);
+        ApiResponse<List<Carriage>> responseAll = carriageController.listCarriages();
 
         int expectedCode = expected == null ? 404 : 200;
         String expectedStatus = expected == null ? "NOT-FOUND" : "SUCCESS";

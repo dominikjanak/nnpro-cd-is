@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service(value = "attackedSubjectService")
@@ -16,8 +17,8 @@ public class AttackedSubjectService {
     @Autowired
     private AttackedSubjectDao attackedSubjectDao;
 
-    public Page<AttackedSubject> findAll(Pageable pageable) {
-        return attackedSubjectDao.findAllByIsDeletedFalse(pageable);
+    public List<AttackedSubject> findAll() {
+        return attackedSubjectDao.findAllByIsDeletedFalse();
     }
 
     public AttackedSubject findById(Integer id) {

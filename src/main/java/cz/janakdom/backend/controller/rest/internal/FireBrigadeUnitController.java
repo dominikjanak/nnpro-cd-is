@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/api/fire-brigade-units")
@@ -24,13 +26,8 @@ public class FireBrigadeUnitController {
     private FireBrigadeUnitService fireBrigadeUnitService;
 
     @GetMapping("/")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", defaultValue = "0"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", defaultValue = "25"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query")
-    })
-    public ApiResponse<Page<FireBrigadeUnit>> listFireBrigadeUnits(@ApiIgnore() Pageable pageable) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireBrigadeUnitService.findAll(pageable));
+    public ApiResponse<List<FireBrigadeUnit>> listFireBrigadeUnits() {
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireBrigadeUnitService.findAll());
     }
 
     @PostMapping("/")

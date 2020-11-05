@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/api/intervention-types")
@@ -21,13 +23,8 @@ public class InterventionTypeController {
     private InterventionTypeService interventionTypeService;
 
     @GetMapping("/")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", defaultValue = "0"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", defaultValue = "25"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query")
-    })
-    public ApiResponse<Page<InterventionType>> listInterventionTypes(@ApiIgnore() Pageable pageable) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", interventionTypeService.findAll(pageable));
+    public ApiResponse<List<InterventionType>> listInterventionTypes() {
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", interventionTypeService.findAll());
     }
 
     @GetMapping("/{id}")

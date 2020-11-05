@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/api/attacked-subjects")
@@ -22,13 +24,8 @@ public class AttackedSubjectController {
     private AttackedSubjectService attackedSubjectService;
 
     @GetMapping("/")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", defaultValue = "0"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", defaultValue = "25"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query")
-    })
-    public ApiResponse<Page<AttackedSubject>> listAttackedSubjects(@ApiIgnore() Pageable pageable) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", attackedSubjectService.findAll(pageable));
+    public ApiResponse<List<AttackedSubject>> listAttackedSubjects() {
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", attackedSubjectService.findAll());
     }
 
     @PostMapping("/")
