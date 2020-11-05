@@ -19,7 +19,7 @@ public class DamageService {
     private DamageDao damageDao;
     @Autowired
     private DamageTypeService damageTypeService;
-    /*@Autowired
+    @Autowired
     private FireIncidentService fireIncidentService;
     @Autowired
     private SecurityIncidentService securityIncidentService;
@@ -93,5 +93,5 @@ public class DamageService {
             damage.setSecurityIncident(securityIncident);
         }
         return damage;
-    }*/
+    }
 }

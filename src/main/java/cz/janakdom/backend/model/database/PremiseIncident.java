@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -19,7 +20,7 @@ public class PremiseIncident {
     private Integer id;
 
     @Column(nullable = false)
-    private Date valid;
+    private LocalDateTime valid;
 
     @JsonIgnore
     @Column(nullable = false)

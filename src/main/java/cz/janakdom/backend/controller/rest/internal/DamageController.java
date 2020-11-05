@@ -15,7 +15,7 @@ public class DamageController {
 
     @Autowired
     private DamageService damageService;
-
+/*
     @PostMapping("/")
     public ApiResponse<Damage> createDamage(@RequestBody DamageDto inputModel) throws Exception {
         String response = checkValidity(inputModel);
@@ -76,5 +76,5 @@ public class DamageController {
             return "INVALID-PARENTS-EMPTY";
         }
         return "";
-    }
+    }*/
 }

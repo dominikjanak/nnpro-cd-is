@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -18,7 +19,7 @@ public class Incident {
     private Integer id;
 
     @Column(nullable = false)
-    private Date creationDatetime;
+    private LocalDateTime creationDatetime;
 
     @Column(nullable = false, length = 50)
     private String location;

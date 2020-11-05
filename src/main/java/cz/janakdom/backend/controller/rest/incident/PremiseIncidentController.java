@@ -1,4 +1,4 @@
-package cz.janakdom.backend.controller.rest.internal;
+package cz.janakdom.backend.controller.rest.incident;
 
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.PremiseIncident;
@@ -17,7 +17,7 @@ public class PremiseIncidentController {
     private PremiseIncidentService premiseIncidentService;
 
     @PostMapping("/")
-    public ApiResponse<PremiseIncident> createPremiseIncident(PremiseIncidentDto premiseIncidentDto) {
+    public ApiResponse<PremiseIncident> createPremiseIncident(PremiseIncidentDto premiseIncidentDto) throws Exception {
         if (premiseIncidentDto.getValid() == null) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-VALID", null);
         }
