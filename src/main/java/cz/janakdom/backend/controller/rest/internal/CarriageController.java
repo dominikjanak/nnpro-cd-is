@@ -16,7 +16,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/api/carriages")
+@RequestMapping(value = "/carriages")
 public class CarriageController {
 
     @Autowired
