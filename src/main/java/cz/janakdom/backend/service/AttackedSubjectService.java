@@ -2,11 +2,10 @@ package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.AttackedSubjectDao;
 import cz.janakdom.backend.model.database.AttackedSubject;
-import cz.janakdom.backend.model.dto.AttackedSubjectDto;
+import cz.janakdom.backend.model.external.AttackedEntityExternal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,63 +15,75 @@ public class AttackedSubjectService {
 
     @Autowired
     private AttackedSubjectDao attackedSubjectDao;
+    @Autowired
+    private ExternalDataService externalDataService;
 
     public List<AttackedSubject> findAll() {
         return attackedSubjectDao.findAllByIsDeletedFalse();
     }
 
-    public AttackedSubject findById(Integer id) {
-        Optional<AttackedSubject> carriage = attackedSubjectDao.findById(id);
+    public AttackedSubject findById(int id) {
+        Optional<AttackedSubject> interventionType = attackedSubjectDao.findById(id);
 
-        return carriage.orElse(null);
+        return interventionType.orElse(null);
     }
 
     public AttackedSubject findByName(String name) {
-        Optional<AttackedSubject> carriage = attackedSubjectDao.findByName(name);
+        Optional<AttackedSubject> interventionType = attackedSubjectDao.findByName(name);
 
-        return carriage.orElse(null);
+        return interventionType.orElse(null);
     }
 
-    public AttackedSubject save(AttackedSubjectDto inputModel) {
-        AttackedSubject attackedSubject = this.findByName(inputModel.getName());
+    private boolean save(String name) {
+        AttackedSubject attackedSubject = this.findByName(name);
 
         if (attackedSubject == null) {
             attackedSubject = new AttackedSubject();
-            attackedSubject.setName(inputModel.getName());
+            attackedSubject.setName(name);
         } else {
             attackedSubject.setIsDeleted(false);
         }
-
-        return attackedSubjectDao.save(attackedSubject);
+        attackedSubjectDao.save(attackedSubject);
+        return true;
     }
 
-    public AttackedSubject update(Integer id, AttackedSubjectDto inputModel) {
-        AttackedSubject attackedSubject = this.findById(id);
+    @Transactional
+    public boolean reload() {
+        List<AttackedEntityExternal> data = externalDataService.getAffectedEntities();
 
-        if (attackedSubject != null) {
-            attackedSubject.setName(inputModel.getName());
-            attackedSubjectDao.save(attackedSubject);
+        // Asi by bylo dobré provést to celé v transakci :D
+        // ale to neumím
+        if (data.size() > 0) {
+            List<AttackedSubject> all = attackedSubjectDao.findAll();
+            boolean state = false;
+
+            // šlo by to i lépe, než přes 2 cykly, ale peču na to!
+            for (AttackedSubject val : all) {
+                state |= this.delete(val);
+            }
+
+            for (AttackedEntityExternal val : data) {
+                state |= this.save(val.getName());
+            }
+            return state;
         }
-
-        return attackedSubject;
+        return false;
     }
 
-    public boolean delete(Integer id) {
-        AttackedSubject attackedSubject = this.findById(id);
-
-        if (attackedSubject != null) {
+    private boolean delete(AttackedSubject interventionType) {
+        if (interventionType != null) {
             // when delete dependency you can delete item
-            /*if (damageType.getIsDeleted()) {
+            /*if (interventionType.getIsDeleted()) {
                 return true;
             }*/
-            if (attackedSubject.getSecurityIncidents().size() > 0) {
-                if(attackedSubject.getIsDeleted()){
-                    return false;
+            if (interventionType.getSecurityIncidents().size() > 0) {
+                if (interventionType.getIsDeleted()) {
+                    return true;
                 }
-                attackedSubject.setIsDeleted(true);
-                attackedSubjectDao.save(attackedSubject);
+                interventionType.setIsDeleted(true);
+                attackedSubjectDao.save(interventionType);
             } else {
-                attackedSubjectDao.delete(attackedSubject);
+                attackedSubjectDao.delete(interventionType);
             }
             return true;
         }
