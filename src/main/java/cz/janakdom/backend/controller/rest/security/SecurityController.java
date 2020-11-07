@@ -9,13 +9,13 @@ import cz.janakdom.backend.model.dto.RegisterUserDto;
 import cz.janakdom.backend.model.dto.RenewPasswordUserDto;
 import cz.janakdom.backend.model.output.AuthenticatedUser;
 import cz.janakdom.backend.security.JwtUtil;
+import cz.janakdom.backend.service.EmailService;
 import cz.janakdom.backend.service.SecurityContext;
 import cz.janakdom.backend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,16 +28,9 @@ public class SecurityController {
     @Autowired
     private JwtUtil jwtUtil;
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
     private UserService userService;
     @Autowired
     private SecurityContext securityContext;
-
-    static boolean isValidEmail(String email) {
-        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
-        return email.matches(regex);
-    }
 
     @PostMapping("/login")
     public ApiResponse<AuthToken> authenticate(@RequestBody AuthRequest authRequest) throws AuthenticationException {
@@ -54,11 +47,10 @@ public class SecurityController {
 
     @PostMapping("/renew")
     public ApiResponse<Void> authenticate(@RequestBody RenewPasswordUserDto renew) {
-        User user = userService.findByUsernameOrEmail(renew.getUsername());
+        User user = userService.findByUsernameOrEmail(renew.getUsername(), renew.getUsername());
 
         if (user != null) {
-            user.setRenewTask(true);
-            userService.update(user);
+            userService.renewTask(user);
             return new ApiResponse<Void>(200, "SUCCESS", null);
         }
 
@@ -66,7 +58,7 @@ public class SecurityController {
     }
 
     @PostMapping("/me")
-    public ApiResponse<AuthenticatedUser> authenticate() {
+    public ApiResponse<AuthenticatedUser> me() {
         User user = securityContext.getAuthenticatedUser();
 
         if (user != null) {
@@ -89,16 +81,16 @@ public class SecurityController {
                 || user.getSurname().isEmpty()
                 || user.getFirstname().isEmpty()
                 || user.getPassword().length() <= 6
-                || !isValidEmail(user.getEmail())
+                || !EmailService.isValidEmail(user.getEmail())
         ) {
-            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "INVALID", null);
+            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "INVALID-INPUT-DATA", null);
         }
 
         if (!userService.isEmailUnique(user.getEmail())) {
             return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "EMAIL-ALREADY-USED", null);
         }
 
-        User findUser = userService.findByUsernameOrEmail(user.getUsername());
+        User findUser = userService.findByUsernameOrEmail(user.getUsername(), user.getEmail());
 
         if (findUser == null) {
             User persisted = userService.save(user);
@@ -111,13 +103,16 @@ public class SecurityController {
     }
 
     @PostMapping("/change-password")
-    public ApiResponse<Void> processPasswordChange(@RequestBody ChangePasswordDto changePassword){
+    public ApiResponse<Void> processPasswordChange(@RequestBody ChangePasswordDto changePassword) {
         User user = securityContext.getAuthenticatedUser();
         User passwordUser = securityContext.doAuthenticate(user.getUsername(), changePassword.getOldPassword());
 
-        if(passwordUser == null)
-        {
+        if (passwordUser == null) {
             return new ApiResponse<Void>(HttpStatus.FORBIDDEN.value(), "FORBIDDEN", null);
+        }
+
+        if (changePassword.getNewPassword().length() <= 6) {
+            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "TOO-SHORT-PASSWORD", null);
         }
 
         userService.updatePass(passwordUser, changePassword.getNewPassword());

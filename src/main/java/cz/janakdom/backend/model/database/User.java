@@ -39,6 +39,10 @@ public class User {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private final List<Incident> incidents = new ArrayList<>();
+
     @Column(nullable = false, length = 100, unique = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String email;

@@ -5,6 +5,7 @@ import cz.janakdom.backend.model.database.User;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
 import cz.janakdom.backend.model.dto.UpdateUserDto;
 import cz.janakdom.backend.model.output.AuthenticatedUser;
+import cz.janakdom.backend.security.AuthLevel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service(value = "userService")
 public class UserService implements UserDetailsService {
@@ -39,24 +43,34 @@ public class UserService implements UserDetailsService {
                 authorities);
     }
 
-    public User findByUsernameOrEmail(String username) {
-        return userDao.findByUsernameOrEmail(username, username);
+    public User findByUsernameOrEmail(String username, String email) {
+        return userDao.findByUsernameOrEmail(username, email);
     }
 
     public boolean isEmailUnique(String email) {
         return userDao.findByEmail(email) == null;
     }
 
-    public void delete(int id) {
-        // TODO: to asi ne takhle :D
-        // dodělat příznak o smazání
-        userDao.deleteById(id);
+    public boolean isUsernameUnique(String username) {
+        return userDao.findByUsername(username) == null;
+    }
+
+    public boolean delete(int id) {
+        User user = findById(id);
+        if (user != null) {
+            if (user.getResponsibleFor().size() > 0 || user.getIncidents().size() > 0) {
+                user.setIsDeleted(true);
+                userDao.save(user);
+            } else {
+                userDao.deleteById(id);
+            }
+            return true;
+        }
+        return false;
     }
 
     public List<User> findAll() {
-        List<User> list = new ArrayList<>();
-        userDao.findAll().iterator().forEachRemaining(list::add);
-        return list;
+        return userDao.findAllByIsDeletedIsFalse();
     }
 
     public User findById(int id) {
@@ -64,22 +78,13 @@ public class UserService implements UserDetailsService {
         return optionalUser.orElse(null);
     }
 
-    public User update(UpdateUserDto userDto) {
-        User user = findById(userDto.getId());
+    public User update(int id, UpdateUserDto userDto) {
+        User user = findById(id);
         if (user != null) {
             BeanUtils.copyProperties(userDto, user, "password", "username");
             userDao.save(user);
         }
         return user;
-    }
-
-    public User update(User user) {
-        User u = findById(user.getId());
-        if (u != null) {
-            BeanUtils.copyProperties(user, u, "password", "username");
-            userDao.save(user);
-        }
-        return u;
     }
 
     public User save(RegisterUserDto user) {
@@ -95,7 +100,7 @@ public class UserService implements UserDetailsService {
 
     public AuthenticatedUser authenticatedUserOutput(User user) {
         AuthenticatedUser authenticated = new AuthenticatedUser();
-        BeanUtils.copyProperties(user, authenticated, "id", "password", "isDeleted", "email", "responsibleFor", "role", "area");
+        BeanUtils.copyProperties(user, authenticated, "id", "password", "isDeleted", "email", "responsibleFor", "role", "area", "incidents");
         authenticated.setRole(user.getRole().getName());
         if (authenticated.getFirstname() == null) {
             authenticated.setFirstname("");
@@ -114,6 +119,22 @@ public class UserService implements UserDetailsService {
     public void updatePass(User user, String newPassword) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(newPassword));
+        userDao.save(user);
+    }
+
+    public boolean checkPermission(AuthLevel authLevel, User user) {
+        switch (authLevel) {
+            case USER:
+                return user.getRole().getName().equals("ROLE_USER");
+            case ADMIN:
+                return user.getRole().getName().equals("ROLE_ADMIN");
+            default:
+        }
+        return false;
+    }
+
+    public void renewTask(User user) {
+        user.setRenewTask(true);
         userDao.save(user);
     }
 }

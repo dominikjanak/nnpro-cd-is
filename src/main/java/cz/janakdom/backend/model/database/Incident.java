@@ -30,6 +30,10 @@ public class Incident {
     @Column(nullable = true, length = 5000)
     private String comment;
 
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User owner;
+
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;
