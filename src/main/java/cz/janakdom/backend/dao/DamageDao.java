@@ -11,6 +11,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DamageDao extends JpaRepository<Damage, Integer> {
-    List<Damage> findAllByIsDeletedFalseAndFireIncidentIsNotNullAndFireIncident_Id(Integer fireIncident_id);
-    List<Damage> findAllByIsDeletedFalseAndSecurityIncidentIsNotNullAndSecurityIncident_Id(Integer securityIncident_id);
 }

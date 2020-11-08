@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -28,10 +27,10 @@ public class Incident {
     private String note;
 
     @Column(nullable = true, length = 5000)
-    private String comment;
+    private String description;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
     @JsonIgnore
@@ -50,17 +49,15 @@ public class Incident {
     @JoinColumn(name = "premiseIncident_id", referencedColumnName = "id")
     private PremiseIncident premiseIncident = null;
 
-    public Incident setSecurityIncident(SecurityIncident securityIncident) throws Exception {
+    public void setSecurityIncident(SecurityIncident securityIncident) throws Exception {
         if (this.premiseIncident != null)
             throw new Exception("The security incident cannot be set because the premise incident is assigned!");
         this.securityIncident = securityIncident;
-        return this;
     }
 
-    public Incident setPremiseIncident(PremiseIncident premiseIncident) throws Exception {
+    public void setPremiseIncident(PremiseIncident premiseIncident) throws Exception {
         if (this.securityIncident != null)
             throw new Exception("The premise incident cannot be set because the security incident is assigned!");
         this.premiseIncident = premiseIncident;
-        return this;
     }
 }

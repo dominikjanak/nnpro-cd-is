@@ -44,7 +44,7 @@ public class Damage {
     @JoinColumn(name = "damage_type_id", nullable = false)
     private DamageType damageType;
 
-     public void setSecurityIncident(SecurityIncident securityIncident) throws Exception {
+    public void setSecurityIncident(SecurityIncident securityIncident) throws Exception {
         if (this.securityIncident != null)
             throw new Exception("The security incident cannot be set because the premise incident is assigned!");
         this.securityIncident = securityIncident;
