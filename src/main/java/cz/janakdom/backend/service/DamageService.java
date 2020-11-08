@@ -1,15 +1,11 @@
 package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.DamageDao;
-import cz.janakdom.backend.model.database.Damage;
-import cz.janakdom.backend.model.database.DamageType;
-import cz.janakdom.backend.model.database.FireIncident;
-import cz.janakdom.backend.model.database.SecurityIncident;
+import cz.janakdom.backend.model.database.*;
 import cz.janakdom.backend.model.dto.DamageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service(value = "damageService")
@@ -26,44 +22,57 @@ public class DamageService {
         return carriage.orElse(null);
     }
 
-    /*@Autowired
-    private FireIncidentService fireIncidentService;
-    @Autowired
-    private SecurityIncidentService securityIncidentService;
+    public boolean validateIncidentId(Damage damage, int incidentId) {
+        boolean fireIdCheck = damage != null
+                && damage.getFireIncident() != null
+                && damage.getFireIncident().getSecurityIncident().getIncident().getId() == incidentId;
+        boolean securityIdCheck = damage != null
+                && damage.getSecurityIncident() != null
+                && damage.getSecurityIncident().getIncident().getId() == incidentId;
 
-    public List<Damage> findFireIncidentDamages(int fireIncidentId) {
-        return damageDao.findAllByIsDeletedFalseAndFireIncidentIsNotNullAndFireIncident_Id(fireIncidentId);
-    }
-
-    public List<Damage> findSecurityIncidentDamages(int securityIncidentId) {
-        return damageDao.findAllByIsDeletedFalseAndSecurityIncidentIsNotNullAndSecurityIncident_Id(securityIncidentId);
-    }
-
-
-
-    public Damage save(DamageDto inputModel) throws Exception {
-        Damage damage = fill(null, inputModel);
-        return damageDao.save(damage);
-    }
-
-    public Damage update(Integer id, DamageDto inputModel) {
-        Damage damage = findById(id);
-
-        if (damage != null) {
-            damage = fill(damage, inputModel);
-            damageDao.save(damage);
-        }
-
-        return damage;
+        return fireIdCheck || securityIdCheck;
     }
 
     public boolean delete(Integer id) {
         Damage damage = findById(id);
+        return this.delete(damage);
+    }
+
+    public boolean delete(Damage damage) {
         if (damage != null) {
             damageDao.delete(damage);
             return true;
         }
         return false;
+    }
+
+    public Damage addToIncident(Incident incident, DamageDto inputModel) throws Exception {
+        Damage filled = fill(null, inputModel);
+
+        if (incident == null || incident.getSecurityIncident() == null) {
+            throw new Exception("VALID-INCIDENT-NOT-FOUND");
+        }
+
+        FireIncident fireIncident = incident.getSecurityIncident().getFireIncident();
+        SecurityIncident securityIncident = incident.getSecurityIncident();
+
+        if (fireIncident != null) {
+            // ADD TO FIRE INCIDENT
+            filled.setFireIncident(fireIncident);
+        } else {
+            // ADD TO SECURITY INCIDENT
+            filled.setSecurityIncident(securityIncident);
+        }
+        damageDao.save(filled);
+        return filled;
+    }
+
+    public Damage update(Damage damage, DamageDto inputModel) throws Exception {
+        if (damage != null) {
+            damage = fill(damage, inputModel);
+            damageDao.save(damage);
+        }
+        return damage;
     }
 
     private Damage fill(Damage damage, DamageDto inputModel) throws Exception {
@@ -79,22 +88,16 @@ public class DamageService {
             throw new Exception("DAMAGE-TYPE-NOT-FOUND");
         }
         damage.setDamageType(damageType);
-
-        if (inputModel.getFireIncidentId() != null) {
-            FireIncident fireIncident = fireIncidentService.findById(inputModel.getFireIncidentId());
-            if (fireIncident == null) {
-                throw new Exception("FIRE-INCIDENT-NOT-FOUND");
-            }
-            damage.setFireIncident(fireIncident);
-        }
-
-        if (inputModel.getSecurityIncidentId() != null) {
-            SecurityIncident securityIncident = securityIncidentService.findById(inputModel.getSecurityIncidentId());
-            if (securityIncident == null) {
-                throw new Exception("SECURITY-INCIDENT-NOT-FOUND");
-            }
-            damage.setSecurityIncident(securityIncident);
-        }
         return damage;
-    }*/
+    }
+
+    public String checkValidity(DamageDto inputModel) {
+        if (inputModel.getFinanceValue() < 0) {
+            return "INVALID-FINANCE-VALUE";
+        }
+        if (inputModel.getAttackedObject().isEmpty()) {
+            return "INVALID-ATTACKED-OBJECT";
+        }
+        return "";
+    }
 }
