@@ -28,7 +28,7 @@ public class IncidentService {
     }
 
     public List<Incident> getAllSecurtiy() {
-        return incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNull();
+        return incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNull();
     }
 
     public List<Incident> getAllFire() {

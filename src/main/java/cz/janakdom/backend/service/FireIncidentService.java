@@ -47,6 +47,10 @@ public class FireIncidentService {
         }
         fireIncident.setInterventionType(interventionType);
 
+        SecurityIncident securityIncident = fireIncident.getSecurityIncident();
+        securityIncident.setFireIncident(fireIncident);
+
+        securityIncidentService.save(securityIncident);
         fireIncidentDao.save(fireIncident);
 
         return incident;

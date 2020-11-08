@@ -31,6 +31,7 @@ public class FireIncident {
     private LocalDateTime validTo;
 
     @OneToOne(mappedBy = "fireIncident")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private SecurityIncident securityIncident;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface IncidentDao extends JpaRepository<Incident, Integer> {
     List<Incident> findAllByPremiseIncidentIsNotNullAndSecurityIncidentIsNull(); // all premise incidents
-    List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNull(); // all security incidents
+    List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNull(); // all security incidents
     List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNull(); // all fire incidents
 }

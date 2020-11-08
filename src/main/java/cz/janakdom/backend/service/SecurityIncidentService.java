@@ -52,6 +52,14 @@ public class SecurityIncidentService {
         return incident;
     }
 
+    public Incident save(SecurityIncident securityIncident){
+        if(securityIncident != null) {
+            securityIncidentDao.save(securityIncident);
+            return securityIncident.getIncident();
+        }
+        return null;
+    }
+
     public Incident update(Integer id, SecurityIncidentDto inputModel) throws Exception {
         Incident incident = incidentService.findById(id);
 
