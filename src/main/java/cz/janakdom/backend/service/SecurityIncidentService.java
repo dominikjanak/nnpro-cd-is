@@ -1,31 +1,29 @@
 package cz.janakdom.backend.service;
 
-import cz.janakdom.backend.dao.PremiseIncidentDao;
+import cz.janakdom.backend.dao.SecurityIncidentDao;
 import cz.janakdom.backend.model.database.Incident;
-import cz.janakdom.backend.model.database.PremiseIncident;
 import cz.janakdom.backend.model.database.Region;
+import cz.janakdom.backend.model.database.SecurityIncident;
 import cz.janakdom.backend.model.dto.incidents.PremiseIncidentDto;
+import cz.janakdom.backend.model.dto.incidents.SecurityIncidentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Service(value = "premiseIncidentService")
-public class PremiseIncidentService {
+@Service(value = "securityIncidentService")
+public class SecurityIncidentService {
 
     @Autowired
-    private PremiseIncidentDao premiseIncidentDao;
-
+    private SecurityIncidentDao securityIncidentDao;
     @Autowired
     private RegionService regionService;
     @Autowired
     private IncidentService incidentService;
-    @Autowired
-    private SecurityContext securityContext;
 
-    private PremiseIncident findById(Integer id) {
-        Optional<PremiseIncident> carriage = premiseIncidentDao.findById(id);
+    private SecurityIncident findById(Integer id) {
+        Optional<SecurityIncident> carriage = securityIncidentDao.findById(id);
 
         return carriage.orElse(null);
     }
@@ -37,7 +35,6 @@ public class PremiseIncidentService {
         incident.setCreationDatetime(inputModel.getCreationDatetime());
         incident.setLocation(inputModel.getLocation());
         incident.setNote(inputModel.getNote());
-        incident.setOwner(securityContext.getAuthenticatedUser());
 
         Region region = regionService.findById(inputModel.getRegion_id());
 
@@ -47,22 +44,21 @@ public class PremiseIncidentService {
 
         incident.setRegion(region);
 
-        PremiseIncident premiseIncident = new PremiseIncident();
-        premiseIncident.setValid(inputModel.getValid());
+        SecurityIncident securityIncident = new SecurityIncident();
+        // TODO: FILL SECURITY INCIDENT
 
-        premiseIncident.setIncident(incident);
-        incident.setPremiseIncident(premiseIncident);
+        incident.setSecurityIncident(securityIncident);
 
+        securityIncidentDao.save(securityIncident);
         incidentService.save(incident);
-        premiseIncidentDao.save(premiseIncident);
 
         return incident;
     }
 
-    public Incident update(Integer id, PremiseIncidentDto inputModel) {
+    public Incident update(Integer id, SecurityIncidentDto inputModel) {
         Incident incident = incidentService.findById(id);
 
-        if (incident.getPremiseIncident() == null) {
+        if (incident.getSecurityIncident() == null) {
             return null;
         }
 
@@ -72,27 +68,29 @@ public class PremiseIncidentService {
         incident.setCreationDatetime(inputModel.getCreationDatetime());
         incident.setLocation(inputModel.getLocation());
 
-        incident.getPremiseIncident().setValid(inputModel.getValid());
-        premiseIncidentDao.save(incident.getPremiseIncident());
+        SecurityIncident securityIncident = incident.getSecurityIncident();
+        // TODO: FILL SECURITY INCIDENT
+
+        securityIncidentDao.save(securityIncident);
         incidentService.save(incident);
 
         return incident;
     }
 
-    public boolean delete(PremiseIncident premiseIncident) {
-        if (premiseIncident != null) {
-            premiseIncidentDao.delete(premiseIncident);
+    public boolean delete(SecurityIncident securityIncident) {
+        if (securityIncident != null) {
+            securityIncidentDao.delete(securityIncident);
             return true;
         }
         return false;
     }
 
     public Incident getOne(int id) {
-        Incident incidentResult = incidentService.getOne(id);
+        Incident securityIncident = incidentService.getOne(id);
 
-        if (incidentResult == null || incidentResult.getPremiseIncident() == null) {
+        if (securityIncident == null || securityIncident.getSecurityIncident() == null) {
             return null;
         }
-        return incidentResult;
+        return securityIncident;
     }
 }

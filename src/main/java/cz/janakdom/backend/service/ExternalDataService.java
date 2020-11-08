@@ -1,7 +1,7 @@
 package cz.janakdom.backend.service;
 
 import com.google.common.collect.Lists;
-import cz.janakdom.backend.model.external.AffectedEntityExternal;
+import cz.janakdom.backend.model.external.AttackedEntityExternal;
 import cz.janakdom.backend.model.external.RailroadExternal;
 import cz.janakdom.backend.model.external.TypeOfInterventionExternal;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -20,9 +20,9 @@ public class ExternalDataService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public List<AffectedEntityExternal> getAffectedEntity() {
+    public List<AttackedEntityExternal> getAffectedEntities() {
         String url = "https://nnpro-exp-api.herokuapp.com/api/serie/affected-entity";
-        AffectedEntityExternal[] data = this.restTemplate.getForObject(url, AffectedEntityExternal[].class);
+        AttackedEntityExternal[] data = this.restTemplate.getForObject(url, AttackedEntityExternal[].class);
         if (data == null)
             return new ArrayList<>();
         return Lists.newArrayList(data);

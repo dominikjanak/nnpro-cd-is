@@ -97,13 +97,14 @@ CREATE TABLE fire_incident
 CREATE TABLE incident
 (
     id                   INT           NOT NULL,
-    comment              VARCHAR(5000) DEFAULT NULL,
-    creation_DATETIME    DATETIME      NOT NULL,
+    `description`        VARCHAR(5000) DEFAULT NULL,
+    creation_Datetime    DATETIME      NOT NULL,
     location             VARCHAR(50)   NOT NULL,
     note                 VARCHAR(5000) NOT NULL,
     premise_incident_id  INT           DEFAULT NULL,
     region_id            INT           NOT NULL,
     security_incident_id INT           DEFAULT NULL,
+    owner_id             INT           NOT NULL,
     is_deleted           bit(1)        NOT NULL
 );
 
@@ -218,7 +219,8 @@ ALTER TABLE incident
     ADD PRIMARY KEY (id),
     ADD KEY FKta941q2qbcndj5dvpn1gye9bh (premise_incident_id),
     ADD KEY FKswtnug2jge1jwblsyh1nqx8py (region_id),
-    ADD KEY FKgsuck247mmo2xae15qc6gqe46 (security_incident_id);
+    ADD KEY FKgsuck247mmo2xae15qc6gqe46 (security_incident_id),
+    ADD KEY FKf4564sdf5sd5f4sd65df5sdfs (owner_id);
 
 ALTER TABLE intervention_type
     ADD PRIMARY KEY (id),

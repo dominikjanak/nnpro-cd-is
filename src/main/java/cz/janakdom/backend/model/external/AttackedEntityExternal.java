@@ -9,6 +9,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AffectedEntityExternal implements Serializable {
+public class AttackedEntityExternal implements Serializable {
     private String name;
 }

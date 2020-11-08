@@ -37,4 +37,8 @@ public class Region {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "region")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final List<Incident> incidents = new ArrayList<>();
+
+    public String toString(){
+        return abbreviation + " " + name;
+    }
 }

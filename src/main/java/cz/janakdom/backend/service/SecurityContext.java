@@ -25,7 +25,8 @@ public class SecurityContext {
         Object principals = auth.getPrincipal();
 
         if (principals instanceof UserDetails) {
-            return userService.findByUsernameOrEmail(((UserDetails) principals).getUsername());
+            String username = ((UserDetails) principals).getUsername();
+            return userService.findByUsernameOrEmail(username, username);
         }
         return null;
     }
@@ -33,7 +34,7 @@ public class SecurityContext {
     public User doAuthenticate(String username, String password) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            return userService.findByUsernameOrEmail(username);
+            return userService.findByUsernameOrEmail(username, username);
         } catch (Exception ex) {
             log.warn("Invalid Credentials: \n  username: " + username + "\n  password: " + password);
         }
