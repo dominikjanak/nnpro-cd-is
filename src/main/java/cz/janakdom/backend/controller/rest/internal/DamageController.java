@@ -48,7 +48,7 @@ public class DamageController {
     }
 
     @PostMapping("/{incidentId}")
-    public ApiResponse<Damage> createDamage(@PathVariable int incidentId, @RequestBody DamageDto inputModel) {
+    public ApiResponse<Damage> createDamage(@PathVariable int incidentId, @RequestBody DamageDto inputModel) throws Exception {
         String response = damageService.checkValidity(inputModel);
         if (!response.equals("")) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), response, null);
@@ -63,11 +63,7 @@ public class DamageController {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-INCIDENT-TYPE", null);
         }
 
-        try {
-            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageService.addToIncident(incident, inputModel));
-        } catch (Exception ex) {
-            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null);
-        }
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageService.addToIncident(incident, inputModel));
     }
 
     @DeleteMapping("/{incidentId}/{damageId}")
@@ -82,7 +78,7 @@ public class DamageController {
 
 
     @PutMapping("/{incidentId}/{damageId}")
-    public ApiResponse<Damage> updateDamage(@PathVariable int incidentId, @PathVariable int damageId, @RequestBody DamageDto inputModel) {
+    public ApiResponse<Damage> updateDamage(@PathVariable int incidentId, @PathVariable int damageId, @RequestBody DamageDto inputModel) throws Exception {
         String response = damageService.checkValidity(inputModel);
         if (!response.equals("")) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), response, null);
@@ -98,10 +94,6 @@ public class DamageController {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "DAMAGE-INVALID-INCIDENT-ID", null);
         }
 
-        try {
-            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageService.update(damage, inputModel));
-        } catch (Exception ex) {
-            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null);
-        }
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageService.update(damage, inputModel));
     }
 }

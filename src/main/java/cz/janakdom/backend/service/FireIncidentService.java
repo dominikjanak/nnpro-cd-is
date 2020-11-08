@@ -63,6 +63,11 @@ public class FireIncidentService {
         model.setRailroad_id(inputModel.getRailroad_id());
         model.setFireBrigadeUnit_ids(inputModel.getFireBrigadeUnit_ids());
         model.setAttackedSubject_ids(inputModel.getAttackedSubject_ids());
+        model.setLocation(inputModel.getLocation());
+        model.setCreationDatetime(inputModel.getCreationDatetime());
+        model.setNote(inputModel.getNote());
+        model.setDescription(inputModel.getDescription());
+        model.setRegion_id(inputModel.getRegion_id());
 
         return model;
     }
