@@ -57,13 +57,21 @@ public class ReportController {
         if (report != null) {
             reportService.remove(hash);
         }
-        return new ApiResponse<>(HttpStatus.OK.value(), report == null ? "BAD_REQUEST" : "SUCCESS", null);
+
+        if(report != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
+
     }
 
     @PostMapping("/generate")
     public ApiResponse<Railroad> generateReports() {
         boolean generated = reportService.generate();
 
-        return new ApiResponse<>(HttpStatus.OK.value(), generated ? "SUCCESS" : "BAD_REQUEST", null);
+        if(generated) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
     }
 }
