@@ -20,19 +20,19 @@ public class IncidentService {
     private SecurityIncidentService securityIncidentService;
 
     public List<Incident> getAll() {
-        return incidentDao.findAllByIsDeletedIsFalse();
+        return incidentDao.findAll();
     }
 
     public List<Incident> getAllPremise() {
-        return incidentDao.findAllByIsDeletedIsFalseAndPremiseIncidentIsNotNullAndSecurityIncidentIsNull();
+        return incidentDao.findAllByPremiseIncidentIsNotNullAndSecurityIncidentIsNull();
     }
 
     public List<Incident> getAllSecurtiy() {
-        return incidentDao.findAllByIsDeletedIsFalseAndSecurityIncidentIsNotNullAndPremiseIncidentIsNull();
+        return incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNull();
     }
 
     public List<Incident> getAllFire() {
-        return incidentDao.findAllByIsDeletedIsFalseAndSecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNull();
+        return incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNull();
     }
 
     public Incident findById(Integer id) {

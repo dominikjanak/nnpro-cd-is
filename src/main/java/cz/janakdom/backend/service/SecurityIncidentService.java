@@ -2,13 +2,11 @@ package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.SecurityIncidentDao;
 import cz.janakdom.backend.model.database.*;
-import cz.janakdom.backend.model.dto.incidents.PremiseIncidentDto;
 import cz.janakdom.backend.model.dto.incidents.SecurityIncidentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +32,8 @@ public class SecurityIncidentService {
     private AttackedSubjectService attackedSubjectService;
     @Autowired
     private FireBrigadeUnitService fireBrigadeUnitService;
+    @Autowired
+    private FireIncidentService fireIncidentService;
     @Autowired
     private DamageService damageService;
 
@@ -83,7 +83,7 @@ public class SecurityIncidentService {
         }
         incident.setRegion(region);
 
-        if(incident.getOwner() == null) {
+        if (incident.getOwner() == null) {
             incident.setOwner(securityContext.getAuthenticatedUser());
         }
         incident.setDescription(inputModel.getDescription());
@@ -116,21 +116,20 @@ public class SecurityIncidentService {
 
         // attacked subjects
         List<AttackedSubject> attackedSubjects = new ArrayList<>();
-        for (Integer idx: inputModel.getAttackedSubject_ids()) {
+        for (Integer idx : inputModel.getAttackedSubject_ids()) {
             AttackedSubject as = attackedSubjectService.findById(idx);
-            if(as == null) {
+            if (as == null) {
                 throw new Exception("Attacked Subject does not exist");
             }
             attackedSubjects.add(as);
         }
         securityIncident.setAttackedSubjects(attackedSubjects);
 
-
         // fire bridge units
         List<FireBrigadeUnit> fireBrigadeUnits = new ArrayList<>();
-        for (Integer idx: inputModel.getFireBrigadeUnit_ids()) {
+        for (Integer idx : inputModel.getFireBrigadeUnit_ids()) {
             FireBrigadeUnit fbu = fireBrigadeUnitService.findById(idx);
-            if(fbu == null) {
+            if (fbu == null) {
                 throw new Exception("Fire brigade unit does not exist");
             }
             fireBrigadeUnits.add(fbu);
@@ -140,6 +139,12 @@ public class SecurityIncidentService {
 
     public boolean delete(SecurityIncident securityIncident) {
         if (securityIncident != null) {
+            if(securityIncident.getFireIncident() != null){
+                fireIncidentService.delete(securityIncident.getFireIncident());
+            }
+            for(Damage d : securityIncident.getDamages()) {
+                damageService.delete(d);
+            }
             securityIncidentDao.delete(securityIncident);
             return true;
         }

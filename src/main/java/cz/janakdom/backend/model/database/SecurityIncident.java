@@ -17,6 +17,7 @@ public class SecurityIncident {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer id;
 
     @Column(nullable = false)
@@ -28,15 +29,12 @@ public class SecurityIncident {
     @Column(nullable = false)
     private Boolean police = false;
 
-    @JsonIgnore
-    @Column(nullable = false)
-    private Boolean isDeleted = false;
-
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "manager", nullable = false)
     private User manager;
 
     @OneToOne(mappedBy = "securityIncident")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Incident incident;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,14 +25,10 @@ public class FireIncident {
     private Integer id;
 
     @Column(nullable = false)
-    private Date validFrom;
+    private LocalDateTime validFrom;
 
     @Column(nullable = false)
-    private Date validTo;
-
-    @JsonIgnore
-    @Column(nullable = false)
-    private Boolean isDeleted = false;
+    private LocalDateTime validTo;
 
     @OneToOne(mappedBy = "fireIncident")
     private SecurityIncident securityIncident;
@@ -43,8 +40,8 @@ public class FireIncident {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "fireIncident")
     private final List<Damage> damages = new ArrayList<>();
 
-    public Boolean setValidRange(Date from, Date to) {
-        if (from.before(to)) {
+    public Boolean setValidRange(LocalDateTime from, LocalDateTime to) {
+        if (from.isBefore(to)) {
             this.validFrom = from;
             this.validTo = to;
             return true;

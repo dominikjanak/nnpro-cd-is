@@ -25,10 +25,6 @@ public class PremiseIncident {
     @Column(nullable = false)
     private LocalDateTime valid;
 
-    @JsonIgnore
-    @Column(nullable = false)
-    private Boolean isDeleted = false;
-
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToOne(mappedBy = "premiseIncident")
     private Incident incident;

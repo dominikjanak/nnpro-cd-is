@@ -33,10 +33,6 @@ public class Incident {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @JsonIgnore
-    @Column(nullable = false)
-    private Boolean isDeleted = false;
-
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;

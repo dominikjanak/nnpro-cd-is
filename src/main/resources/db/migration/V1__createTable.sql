@@ -61,8 +61,7 @@ CREATE TABLE railroad
 CREATE TABLE premise_incident
 (
     id         INT      NOT NULL,
-    valid      DATETIME NOT NULL,
-    is_deleted bit(1)   NOT NULL
+    valid      DATETIME NOT NULL
 );
 
 CREATE TABLE damage_type
@@ -90,8 +89,7 @@ CREATE TABLE fire_incident
     id                   INT      NOT NULL,
     valid_from           DATETIME NOT NULL,
     valid_to             DATETIME NOT NULL,
-    intervention_type_id INT      NOT NULL,
-    is_deleted           bit(1)   NOT NULL
+    intervention_type_id INT      NOT NULL
 );
 
 CREATE TABLE incident
@@ -104,8 +102,7 @@ CREATE TABLE incident
     premise_incident_id  INT           DEFAULT NULL,
     region_id            INT           NOT NULL,
     security_incident_id INT           DEFAULT NULL,
-    owner_id             INT           NOT NULL,
-    is_deleted           bit(1)        NOT NULL
+    owner_id             INT           NOT NULL
 );
 
 CREATE TABLE intervention_type
@@ -138,7 +135,6 @@ CREATE TABLE security_incident
     crime            bit(1)       NOT NULL,
     police           bit(1)       NOT NULL,
     fire_incident_id INT DEFAULT NULL,
-    is_deleted       bit(1)       NOT NULL,
     manager          INT          NOT NULL,
     railroad_id      INT          NOT NULL,
     carriage_id      INT          NOT NULL
