@@ -19,6 +19,13 @@ public class DamageService {
     private DamageDao damageDao;
     @Autowired
     private DamageTypeService damageTypeService;
+
+    public Damage findById(Integer id) {
+        Optional<Damage> carriage = damageDao.findById(id);
+
+        return carriage.orElse(null);
+    }
+
     /*@Autowired
     private FireIncidentService fireIncidentService;
     @Autowired
@@ -32,11 +39,7 @@ public class DamageService {
         return damageDao.findAllByIsDeletedFalseAndSecurityIncidentIsNotNullAndSecurityIncident_Id(securityIncidentId);
     }
 
-    public Damage findById(Integer id) {
-        Optional<Damage> carriage = damageDao.findById(id);
 
-        return carriage.orElse(null);
-    }
 
     public Damage save(DamageDto inputModel) throws Exception {
         Damage damage = fill(null, inputModel);

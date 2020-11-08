@@ -3,30 +3,32 @@ package cz.janakdom.backend.controller.rest.incident;
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.Incident;
 import cz.janakdom.backend.model.dto.incidents.PremiseIncidentDto;
+import cz.janakdom.backend.model.dto.incidents.SecurityIncidentDto;
 import cz.janakdom.backend.service.IncidentService;
 import cz.janakdom.backend.service.PremiseIncidentService;
+import cz.janakdom.backend.service.SecurityIncidentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/api/premise-incidents")
-public class PremiseIncidentController {
+@RequestMapping(value = "/api/security-incidents")
+public class SecurityIncidentController {
 
     @Autowired
-    private PremiseIncidentService premiseIncidentService;
+    private SecurityIncidentService securityIncidentService;
 
     @PostMapping("/")
-    public ApiResponse<Incident> createPremiseIncident(@RequestBody PremiseIncidentDto inputModel) throws Exception {
-        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", premiseIncidentService.save(inputModel));
+    public ApiResponse<Incident> createSecurityIncident(@RequestBody SecurityIncidentDto inputModel) throws Exception {
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", securityIncidentService.save(inputModel));
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<Incident> findPremiseIncident(@PathVariable int id) {
-        Incident incident = premiseIncidentService.getOne(id);
+    public ApiResponse<Incident> findSecurityIncident(@PathVariable int id) {
+        Incident incident = securityIncidentService.getOne(id);
 
-        if (incident == null || incident.getPremiseIncident() == null) {
+        if (incident == null || incident.getSecurityIncident() == null) {
             return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
         }
 
@@ -34,8 +36,8 @@ public class PremiseIncidentController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<Incident> updatePremiseIncident(@PathVariable int id, @RequestBody PremiseIncidentDto inputmodel) throws Exception {
-        Incident updated = premiseIncidentService.update(id, inputmodel);
+    public ApiResponse<Incident> updateSecurityIncident(@PathVariable int id, @RequestBody SecurityIncidentDto inputmodel) throws Exception {
+        Incident updated = securityIncidentService.update(id, inputmodel);
 
         if (updated == null) {
             return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
@@ -44,8 +46,8 @@ public class PremiseIncidentController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deletePremiseIncident(@PathVariable int id) {
-        boolean deleted = premiseIncidentService.delete(id);
+    public ApiResponse<Void> deleteSecurityIncident(@PathVariable int id) {
+        boolean deleted = securityIncidentService.delete(id);
 
         if (deleted) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);

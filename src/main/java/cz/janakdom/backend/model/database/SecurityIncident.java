@@ -45,26 +45,26 @@ public class SecurityIncident {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fireIncident_id", referencedColumnName = "id")
-    private final FireIncident fireIncident = null;
+    private FireIncident fireIncident = null;
 
     @ManyToMany
     @JoinTable(
             name = "fire_brigade_unit_incident",
             joinColumns = @JoinColumn(name = "security_incident_id"),
             inverseJoinColumns = @JoinColumn(name = "fire_brigade_unit_id"))
-    private final List<FireBrigadeUnit> fireBrigadeUnits = new ArrayList<>();
+    private List<FireBrigadeUnit> fireBrigadeUnits = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
             name = "attacked_subjects_incident",
             joinColumns = @JoinColumn(name = "security_incident_id"),
             inverseJoinColumns = @JoinColumn(name = "attacked_subject_id"))
-    private final List<AttackedSubject> attackedSubjects = new ArrayList<>();
+    private List<AttackedSubject> attackedSubjects = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "railroad_id", nullable = false)
     private Railroad railroad;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "securityIncident")
-    private final List<Damage> damages = new ArrayList<>();
+    private List<Damage> damages = new ArrayList<>();
 }

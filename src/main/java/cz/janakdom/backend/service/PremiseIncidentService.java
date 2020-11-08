@@ -59,7 +59,7 @@ public class PremiseIncidentService {
         return incident;
     }
 
-    public Incident update(Integer id, PremiseIncidentDto inputModel) {
+    public Incident update(Integer id, PremiseIncidentDto inputModel) throws Exception {
         Incident incident = incidentService.findById(id);
 
         if (incident.getPremiseIncident() == null) {
@@ -67,7 +67,13 @@ public class PremiseIncidentService {
         }
 
         incident.setDescription(inputModel.getDescription());
-        incident.setRegion(regionService.findById(inputModel.getRegion_id()));
+
+        Region region = regionService.findById(inputModel.getRegion_id());
+        if (region == null) {
+            throw new Exception("Region does not exist!");
+        }
+        incident.setRegion(region);
+
         incident.setNote(inputModel.getNote());
         incident.setCreationDatetime(inputModel.getCreationDatetime());
         incident.setLocation(inputModel.getLocation());
@@ -82,6 +88,16 @@ public class PremiseIncidentService {
     public boolean delete(PremiseIncident premiseIncident) {
         if (premiseIncident != null) {
             premiseIncidentDao.delete(premiseIncident);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean delete(int id) {
+        Incident incident = incidentService.findById(id);
+
+        if (incident != null && incident.getPremiseIncident() != null) {
+            incidentService.delete(incident);
             return true;
         }
         return false;
