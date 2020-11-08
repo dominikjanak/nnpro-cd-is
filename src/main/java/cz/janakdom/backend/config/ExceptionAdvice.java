@@ -12,6 +12,10 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(Exception.class)
     protected ApiResponse<Void> handleGlobalException(Exception ex) {
-        return new ApiResponse<Void>(400, ex.getMessage(), null);
+
+        if(ex.getMessage().endsWith("NOT-FOUND")) {
+            return new ApiResponse<Void>(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
+        }
+        return new ApiResponse<Void>(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null);
     }
 }

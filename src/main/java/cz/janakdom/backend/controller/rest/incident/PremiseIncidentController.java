@@ -50,6 +50,6 @@ public class PremiseIncidentController {
         if (deleted) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT_FOUND", null);
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 }

@@ -42,7 +42,7 @@ public class SecurityController {
             return new ApiResponse<>(200, "SUCCESS", tokenWithPayload);
         }
 
-        return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "INVALID-CREDENTIALS", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-CREDENTIALS", null);
     }
 
     @PostMapping("/renew")
@@ -54,7 +54,7 @@ public class SecurityController {
             return new ApiResponse<Void>(200, "SUCCESS", null);
         }
 
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
     }
 
     @PostMapping("/me")
@@ -66,7 +66,7 @@ public class SecurityController {
             return new ApiResponse<>(200, "SUCCESS", authenticated);
         }
 
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
     }
 
     @PostMapping("/logout")
@@ -83,11 +83,11 @@ public class SecurityController {
                 || user.getPassword().length() <= 6
                 || !EmailService.isValidEmail(user.getEmail())
         ) {
-            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "INVALID-INPUT-DATA", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-INPUT-DATA", null);
         }
 
         if (!userService.isEmailUnique(user.getEmail())) {
-            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "EMAIL-ALREADY-USED", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMAIL-ALREADY-USED", null);
         }
 
         User findUser = userService.findByUsernameOrEmail(user.getUsername(), user.getEmail());
@@ -99,7 +99,7 @@ public class SecurityController {
             return new ApiResponse<>(200, "SUCCESS", tokenWithPayload);
         }
 
-        return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "ALREADY-EXISTS", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "ALREADY-EXISTS", null);
     }
 
     @PostMapping("/change-password")
@@ -112,7 +112,7 @@ public class SecurityController {
         }
 
         if (changePassword.getNewPassword().length() <= 6) {
-            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "TOO-SHORT-PASSWORD", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "TOO-SHORT-PASSWORD", null);
         }
 
         userService.updatePass(passwordUser, changePassword.getNewPassword());

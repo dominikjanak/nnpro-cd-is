@@ -42,6 +42,6 @@ public class InterventionTypeController {
         if (reloaded) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
     }
 }

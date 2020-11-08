@@ -42,7 +42,7 @@ public class PremiseIncidentService {
         Region region = regionService.findById(inputModel.getRegion_id());
 
         if (region == null) {
-            throw new Exception("Region does not exist!");
+            throw new Exception("REGION-NOT-FOUND");
         }
 
         incident.setRegion(region);
@@ -70,7 +70,7 @@ public class PremiseIncidentService {
 
         Region region = regionService.findById(inputModel.getRegion_id());
         if (region == null) {
-            throw new Exception("Region does not exist!");
+            throw new Exception("REGION-NOT-FOUND");
         }
         incident.setRegion(region);
 

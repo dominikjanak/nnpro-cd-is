@@ -37,12 +37,6 @@ public class SecurityIncidentService {
     @Autowired
     private DamageService damageService;
 
-    private SecurityIncident findById(Integer id) {
-        Optional<SecurityIncident> carriage = securityIncidentDao.findById(id);
-
-        return carriage.orElse(null);
-    }
-
     @Transactional
     public Incident save(SecurityIncidentDto inputModel) throws Exception {
         Incident incident = new Incident();
@@ -79,7 +73,7 @@ public class SecurityIncidentService {
 
         Region region = regionService.findById(inputModel.getRegion_id());
         if (region == null) {
-            throw new Exception("Region does not exist!");
+            throw new Exception("REGION-NOT-FOUND");
         }
         incident.setRegion(region);
 
@@ -94,19 +88,19 @@ public class SecurityIncidentService {
 
         Carriage carriage = carriageService.findById(inputModel.getCarriage_id());
         if (carriage == null) {
-            throw new Exception("Carriage does not exist!");
+            throw new Exception("CARRIAGE-NOT-FOUND");
         }
         securityIncident.setCarriage(carriage);
 
         Railroad railroad = railroadService.findById(inputModel.getRailroad_id());
         if (railroad == null) {
-            throw new Exception("Railroad does not exist!");
+            throw new Exception("RAILROAD-NOT-FOUND");
         }
         securityIncident.setRailroad(railroad);
 
         User manager = userService.findById(inputModel.getManager_id());
         if (manager == null) {
-            throw new Exception("Manager does not exist!");
+            throw new Exception("MANAGER-NOT-FOUND");
         }
         securityIncident.setManager(manager);
 
@@ -119,7 +113,7 @@ public class SecurityIncidentService {
         for (Integer idx : inputModel.getAttackedSubject_ids()) {
             AttackedSubject as = attackedSubjectService.findById(idx);
             if (as == null) {
-                throw new Exception("Attacked Subject does not exist");
+                throw new Exception("ATTACKED-SUBJECT-NOT-FOUND");
             }
             attackedSubjects.add(as);
         }
@@ -130,7 +124,7 @@ public class SecurityIncidentService {
         for (Integer idx : inputModel.getFireBrigadeUnit_ids()) {
             FireBrigadeUnit fbu = fireBrigadeUnitService.findById(idx);
             if (fbu == null) {
-                throw new Exception("Fire brigade unit does not exist");
+                throw new Exception("FIRE-BRIGADE-UNIT-NOT-FOUND");
             }
             fireBrigadeUnits.add(fbu);
         }

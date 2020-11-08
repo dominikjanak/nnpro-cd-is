@@ -34,7 +34,7 @@ public class DamageTypeController {
         if (damageType != null) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageType);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "NOT-FOUND", null);
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @PostMapping("/")
@@ -69,6 +69,6 @@ public class DamageTypeController {
         if (damageTypeService.delete(id)) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
     }
 }

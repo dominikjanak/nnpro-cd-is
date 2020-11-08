@@ -87,7 +87,7 @@ public class DamageController {
         Damage damage = damageService.findById(damageId);
 
         if (damage == null) {
-            return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "DAMAGE-NOT-FOUND", null);
+            return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
         }
 
         if (!damageService.validateIncidentId(damage, incidentId)) {

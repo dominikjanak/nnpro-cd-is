@@ -61,7 +61,7 @@ public class ReportController {
         if(report != null) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
 
     }
 
@@ -72,6 +72,6 @@ public class ReportController {
         if(generated) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
     }
 }

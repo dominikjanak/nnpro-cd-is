@@ -48,15 +48,15 @@ public class UserController {
                 || registerUser.getPassword().length() <= 6
                 || !EmailService.isValidEmail(registerUser.getEmail())
         ) {
-            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "INVALID-INPUT-DATA", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-INPUT-DATA", null);
         }
 
         if (!userService.isEmailUnique(registerUser.getEmail())) {
-            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "EMAIL-ALREADY-USED", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMAIL-ALREADY-USED", null);
         }
 
         if (!userService.isUsernameUnique(registerUser.getUsername())) {
-            return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "USERNAME-ALREADY-USED", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "USERNAME-ALREADY-USED", null);
         }
 
         User findUser = userService.findByUsernameOrEmail(registerUser.getUsername(), registerUser.getEmail());
@@ -66,7 +66,7 @@ public class UserController {
             return new ApiResponse<>(200, "SUCCESS", null);
         }
 
-        return new ApiResponse<>(HttpStatus.NOT_ACCEPTABLE.value(), "ALREADY-EXISTS", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "ALREADY-EXISTS", null);
     }
 
     @GetMapping("/{id}")
@@ -118,6 +118,6 @@ public class UserController {
         if (userService.delete(id)) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
     }
 }

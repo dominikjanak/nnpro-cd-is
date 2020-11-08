@@ -88,6 +88,6 @@ public class CarriageController {
         if (carriageService.delete(id)) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
     }
 }
