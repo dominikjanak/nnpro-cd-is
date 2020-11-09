@@ -32,12 +32,12 @@ public class Damage {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JoinColumn(name = "security_incident_id", nullable = false)
+    @JoinColumn(name = "security_incident_id")
     private SecurityIncident securityIncident;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JoinColumn(name = "fire_incident_id", nullable = false)
+    @JoinColumn(name = "fire_incident_id")
     private FireIncident fireIncident;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -45,14 +45,14 @@ public class Damage {
     private DamageType damageType;
 
     public void setSecurityIncident(SecurityIncident securityIncident) throws Exception {
-        if (this.securityIncident != null)
-            throw new Exception("The security incident cannot be set because the premise incident is assigned!");
+        if (this.fireIncident != null)
+            throw new Exception("CANNOT-SET-SECURITY-INCIDENT-BECAUSE-FIRE-INCIDENT-ALWAYS-SET");
         this.securityIncident = securityIncident;
     }
 
     public void setFireIncident(FireIncident fireIncident) throws Exception {
         if (this.securityIncident != null)
-            throw new Exception("The premise incident cannot be set because the security incident is assigned!");
+            throw new Exception("CANNOT-SET-FIRE-INCIDENT-BECAUSE-SECURITY-INCIDENT-ALWAYS-SET");
         this.fireIncident = fireIncident;
     }
 }

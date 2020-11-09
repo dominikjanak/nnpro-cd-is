@@ -33,3 +33,16 @@ INSERT INTO region (id, abbreviation, name, area_id, is_deleted) VALUES
 INSERT INTO user (id, email, username, password, firstname, surname, area_id, renew_task, role_id, is_deleted) VALUES
 (1, 'admin@example.com', 'admin', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', NULL, NULL, NULL, false, 1, 0),
 (2, 'user@example.com', 'user', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', 'Uživatel', 'Veselý', 3, false, 2, 0);
+
+INSERT INTO carriage (id, serial_number, producer, color, home_station, is_deleted) VALUES
+(1, 'SN054652', 'Škoda', 'Červená', 'Bohumín', 0),
+(2, 'SN2255', 'Škoda', 'Zelená', 'Praha', 0);
+
+INSERT INTO damage_type (id, name, is_deleted) VALUES
+(NULL, 'Damage one', 0),
+(NULL, 'Damage two', 0);
+
+INSERT INTO fire_brigade_unit (id, name, is_deleted) VALUES
+(1, 'Hasiči praha', 0),
+(2, 'Hasiči Brno', 0),
+(3, 'Hasiči Bohumín', 0);

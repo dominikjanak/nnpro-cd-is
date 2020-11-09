@@ -46,7 +46,8 @@ CREATE TABLE damage
     attacked_object      VARCHAR(100) NOT NULL,
     finance_value        FLOAT        NOT NULL,
     damage_type_id       INT          NOT NULL,
-    security_incident_id INT          NOT NULL,
+    security_incident_id INT          DEFAULT NULL,
+    fire_incident_id     INT          DEFAULT NULL,
     is_deleted           bit(1)       NOT NULL
 );
 
