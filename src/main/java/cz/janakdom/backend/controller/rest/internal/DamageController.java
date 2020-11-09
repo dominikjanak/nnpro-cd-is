@@ -26,8 +26,11 @@ public class DamageController {
     public ApiResponse<List<Damage>> findIncidentDamages(@PathVariable int incidentId) {
         Incident incident = incidentService.findById(incidentId);
 
-        if (incident == null || incident.getSecurityIncident() == null) {
+        if (incident == null) {
             return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+        }
+        if (incident.getSecurityIncident() == null) {
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-INCIDENT-TYPE", null);
         }
 
         if (incident.getSecurityIncident().getFireIncident() == null) {
@@ -38,13 +41,18 @@ public class DamageController {
     }
 
     @GetMapping("/{incidentId}/{damageId}/one")
-    public ApiResponse<Damage> getDamage(@PathVariable int incidentId, @PathVariable int damageId) {
+    public ApiResponse<Damage> getDamage(@PathVariable int incidentId, @PathVariable int damageId) throws Exception {
         Damage damage = damageService.findById(damageId);
 
-        if (damageService.validateIncidentId(damage, incidentId)) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damage);
+        if(damage == null) {
+            return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
         }
-        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+
+        if (!damageService.validateIncidentId(damage, incidentId)) {
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-INCIDENT-ID", null);
+        }
+
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damage);
     }
 
     @PostMapping("/{incidentId}")
@@ -67,13 +75,21 @@ public class DamageController {
     }
 
     @DeleteMapping("/{incidentId}/{damageId}")
-    public ApiResponse<Void> deleteDamage(@PathVariable int incidentId, @PathVariable int damageId) {
+    public ApiResponse<Void> deleteDamage(@PathVariable int incidentId, @PathVariable int damageId) throws Exception {
         Damage damage = damageService.findById(damageId);
 
-        if (damageService.validateIncidentId(damage, incidentId) && damageService.delete(damage)) {
+        if(damage == null) {
+            return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+        }
+
+        if (!damageService.validateIncidentId(damage, incidentId)) {
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-INCIDENT-ID", null);
+        }
+
+        if (damageService.delete(damage)) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
     }
 
 
@@ -91,7 +107,7 @@ public class DamageController {
         }
 
         if (!damageService.validateIncidentId(damage, incidentId)) {
-            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "DAMAGE-INVALID-INCIDENT-ID", null);
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-INCIDENT-ID", null);
         }
 
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", damageService.update(damage, inputModel));
