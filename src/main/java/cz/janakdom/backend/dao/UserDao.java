@@ -10,5 +10,5 @@ public interface UserDao extends JpaRepository<User, Integer> {
     User findByEmail(String email);
     User findByUsernameOrEmail(String username, String email);
     User findAllByRoleIsNotNullAndRoleName(String role_name );
-    List<User> findAllByIsDeletedIsFalse();
+    List<User> findAllByRoleIsNotNullAndRoleNameAndIsDeletedIsFalse(String role_name);
 }

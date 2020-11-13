@@ -74,7 +74,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> findAll() {
-        return userDao.findAllByIsDeletedIsFalse();
+        return userDao.findAllByRoleIsNotNullAndRoleNameAndIsDeletedIsFalse("ROLE_USER");
     }
 
     public User findById(int id) {
