@@ -29,6 +29,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private AreaService areaService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsernameOrEmail(username, username);
@@ -82,6 +85,7 @@ public class UserService implements UserDetailsService {
         User user = findById(id);
         if (user != null) {
             BeanUtils.copyProperties(userDto, user, "password", "username");
+            user.setArea(areaService.findById(userDto.getAreaId()));
             userDao.save(user);
         }
         return user;
@@ -91,7 +95,7 @@ public class UserService implements UserDetailsService {
         User newUser = new User();
         newUser.setRole(roleService.findByRole("ROLE_USER"));
         BeanUtils.copyProperties(user, newUser, "password");
-
+        newUser.setArea(areaService.findById(user.getAreaId()));
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         newUser.setPassword(encoder.encode(user.getPassword()));
 

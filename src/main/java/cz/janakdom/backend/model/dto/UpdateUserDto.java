@@ -11,4 +11,5 @@ public class UpdateUserDto {
     private String firstname;
     private String surname;
     private String email;
+    private int areaId;
 }

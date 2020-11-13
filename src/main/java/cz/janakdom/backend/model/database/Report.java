@@ -27,6 +27,7 @@ public class Report {
     @Column(nullable = false, length = 150, unique = true)
     private String filename;
 
+    //TODO: uděej vazbu na typ reportu
     @Column(length = 500)
     private String description;
 

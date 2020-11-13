@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public ApiResponse<Void> createUser(RegisterUserDto registerUser) {
+    public ApiResponse<Void> createUser(@RequestBody RegisterUserDto registerUser) {
         User authenticatedUser = securityContext.getAuthenticatedUser();
         if (!userService.checkPermission(AuthLevel.ADMIN, authenticatedUser)) {
             return new ApiResponse<>(HttpStatus.FORBIDDEN.value(), "INVALID-AUTHORIZATION", null);
@@ -62,6 +62,7 @@ public class UserController {
         User findUser = userService.findByUsernameOrEmail(registerUser.getUsername(), registerUser.getEmail());
 
         if (findUser == null) {
+
             User persisted = userService.save(registerUser);
             return new ApiResponse<>(200, "SUCCESS", null);
         }
