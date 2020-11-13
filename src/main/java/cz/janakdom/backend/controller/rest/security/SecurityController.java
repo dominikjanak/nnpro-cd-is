@@ -8,6 +8,7 @@ import cz.janakdom.backend.model.dto.ChangePasswordDto;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
 import cz.janakdom.backend.model.dto.RenewPasswordUserDto;
 import cz.janakdom.backend.model.output.AuthenticatedUser;
+import cz.janakdom.backend.security.AuthLevel;
 import cz.janakdom.backend.security.JwtUtil;
 import cz.janakdom.backend.service.EmailService;
 import cz.janakdom.backend.service.SecurityContext;
@@ -76,6 +77,10 @@ public class SecurityController {
 
     @PostMapping("/register")
     public ApiResponse<AuthToken> register(@RequestBody RegisterUserDto user) {
+        User authenticatedUser = securityContext.getAuthenticatedUser();
+        if (!userService.checkPermission(AuthLevel.ADMIN, authenticatedUser)) {
+            return new ApiResponse<>(HttpStatus.FORBIDDEN.value(), "INVALID-AUTHORIZATION", null);
+        }
 
         if (user.getUsername().length() <= 3
                 || user.getSurname().isEmpty()
