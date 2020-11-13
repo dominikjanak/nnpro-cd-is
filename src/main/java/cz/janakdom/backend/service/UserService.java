@@ -3,6 +3,7 @@ package cz.janakdom.backend.service;
 import cz.janakdom.backend.dao.UserDao;
 import cz.janakdom.backend.model.database.User;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
+import cz.janakdom.backend.model.dto.RenewPasswordDto;
 import cz.janakdom.backend.model.dto.UpdateUserDto;
 import cz.janakdom.backend.model.output.AuthenticatedUser;
 import cz.janakdom.backend.security.AuthLevel;
@@ -89,6 +90,19 @@ public class UserService implements UserDetailsService {
             userDao.save(user);
         }
         return user;
+    }
+
+    public boolean renewPassword(int id, RenewPasswordDto renewPasswordDto) {
+        User user = findById(id);
+
+        if (user == null || user.getRenewTask() == false) {
+           return false;
+        }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(renewPasswordDto.getPassword()));
+        user.setRenewTask(false);
+        userDao.save(user);
+        return true;
     }
 
     public User save(RegisterUserDto user) {

@@ -3,6 +3,7 @@ package cz.janakdom.backend.controller.rest.internal;
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.User;
 import cz.janakdom.backend.model.dto.RegisterUserDto;
+import cz.janakdom.backend.model.dto.RenewPasswordDto;
 import cz.janakdom.backend.model.dto.UpdateUserDto;
 import cz.janakdom.backend.security.AuthLevel;
 import cz.janakdom.backend.service.EmailService;
@@ -107,6 +108,25 @@ public class UserController {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", updatedUser);
         }
         return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+    }
+
+    @PutMapping("/{id}/renew")
+    public ApiResponse<Void> renewPasswordUser(@PathVariable int id, @RequestBody RenewPasswordDto renewPassword) {
+        User authenticatedUser = securityContext.getAuthenticatedUser();
+        if (!userService.checkPermission(AuthLevel.ADMIN, authenticatedUser)) {
+            return new ApiResponse<>(HttpStatus.FORBIDDEN.value(), "INVALID-AUTHORIZATION", null);
+        }
+
+        if (renewPassword.getPassword().length() <= 6)
+        {
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-INPUT-DATA", null);
+        }
+        if (!userService.renewPassword(id, renewPassword))
+        {
+            return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+        }
+
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
     }
 
     @DeleteMapping("/{id}")
