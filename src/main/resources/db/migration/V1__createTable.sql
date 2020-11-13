@@ -136,7 +136,7 @@ CREATE TABLE security_incident
     crime            bit(1)       NOT NULL,
     police           bit(1)       NOT NULL,
     fire_incident_id INT DEFAULT NULL,
-    manager          INT          NOT NULL,
+    manager_id       INT          NOT NULL,
     railroad_id      INT          NOT NULL,
     carriage_id      INT          NOT NULL
 );
@@ -243,7 +243,7 @@ ALTER TABLE role
 ALTER TABLE security_incident
     ADD PRIMARY KEY (id),
     ADD KEY FKpxoh5rw2x488b4wgbv3p6ikno (fire_incident_id),
-    ADD KEY FK4thyyps7mvgqalsf4ghn7j6nn (manager),
+    ADD KEY FK4thyyps7mvgqalsf4ghn7j6nn (manager_id),
     ADD KEY FKc5445f5sddfsdf564d5f5sd4f (carriage_id),
     ADD KEY FKc9ieh0f8l0vyrduun4qqswqgc (railroad_id);
 

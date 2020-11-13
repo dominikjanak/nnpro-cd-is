@@ -30,7 +30,7 @@ public class SecurityIncident {
     private Boolean police = false;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "manager", nullable = false)
+    @JoinColumn(name = "manager_id", nullable = false)
     private User manager;
 
     @OneToOne(mappedBy = "securityIncident")
@@ -38,7 +38,7 @@ public class SecurityIncident {
     private Incident incident;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "carriage", nullable = false)
+    @JoinColumn(name = "carriage_id", nullable = false)
     private Carriage carriage;
 
     @OneToOne(cascade = CascadeType.ALL)
