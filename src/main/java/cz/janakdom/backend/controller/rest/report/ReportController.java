@@ -3,6 +3,7 @@ package cz.janakdom.backend.controller.rest.report;
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.Railroad;
 import cz.janakdom.backend.model.database.Report;
+import cz.janakdom.backend.model.enums.ReportType;
 import cz.janakdom.backend.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,13 +34,26 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @GetMapping("/")
-    public List<Report> getReportsList() {
-        return reportService.findAll();
+    @GetMapping("/{type}")
+    public ApiResponse<List<Report>> getReportsList(@PathVariable("type") String typeName) {
+        ReportType type;
+
+        switch (typeName) {
+            case "hzs":
+                type = ReportType.HZS;
+                break;
+            case "police":
+                type = ReportType.POLICE;
+                break;
+            default:
+                return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
+        }
+
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", reportService.findAll(type));
     }
 
-    @GetMapping("/{hash}")
-    public String getReport(@PathVariable("hash") String hash, HttpServletResponse response) {
+    @GetMapping("/download/{hash}")
+    public String downloadReport(@PathVariable("hash") String hash, HttpServletResponse response) {
         Report report = reportService.findByHash(hash);
 
         if (report != null) {
@@ -64,6 +78,6 @@ public class ReportController {
         if(generated) {
             return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-REPORT-TYPE", null);
     }
 }

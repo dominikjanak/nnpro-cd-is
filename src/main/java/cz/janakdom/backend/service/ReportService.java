@@ -2,6 +2,7 @@ package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.ReportDao;
 import cz.janakdom.backend.model.database.Report;
+import cz.janakdom.backend.model.enums.ReportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ public class ReportService {
     @Autowired
     private ReportDao reportDao;
 
-    public List<Report> findAll() {
-        return reportDao.findAllByOrderByIdDesc();
+    public List<Report> findAll(ReportType type) {
+        return reportDao.findAllByTypeOrderByIdDesc(type);
     }
 
     public Report findById(Integer id) {
