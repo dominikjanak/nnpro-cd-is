@@ -1,6 +1,7 @@
 package cz.janakdom.backend.model.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import cz.janakdom.backend.model.enums.ReportType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,9 +28,8 @@ public class Report {
     @Column(nullable = false, length = 150, unique = true)
     private String filename;
 
-    //TODO: uděej vazbu na typ reportu
-    @Column(length = 500)
-    private String description;
+    @Column(nullable = false)
+    private ReportType type;
 
     @JsonIgnore
     @Column(nullable = false)
