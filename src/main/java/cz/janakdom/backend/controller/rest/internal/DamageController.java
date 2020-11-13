@@ -41,7 +41,7 @@ public class DamageController {
     }
 
     @GetMapping("/{incidentId}/{damageId}/one")
-    public ApiResponse<Damage> getDamage(@PathVariable int incidentId, @PathVariable int damageId) throws Exception {
+    public ApiResponse<Damage> getDamage(@PathVariable int incidentId, @PathVariable int damageId) {
         Damage damage = damageService.findById(damageId);
 
         if(damage == null) {
@@ -75,7 +75,7 @@ public class DamageController {
     }
 
     @DeleteMapping("/{incidentId}/{damageId}")
-    public ApiResponse<Void> deleteDamage(@PathVariable int incidentId, @PathVariable int damageId) throws Exception {
+    public ApiResponse<Void> deleteDamage(@PathVariable int incidentId, @PathVariable int damageId) {
         Damage damage = damageService.findById(damageId);
 
         if(damage == null) {

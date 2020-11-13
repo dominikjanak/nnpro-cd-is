@@ -5,6 +5,7 @@ import cz.janakdom.backend.model.database.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service(value = "reportService")
@@ -12,6 +13,10 @@ public class ReportService {
 
     @Autowired
     private ReportDao reportDao;
+
+    public List<Report> findAll() {
+        return reportDao.findAllByOrderByIdContentDesc();
+    }
 
     public Report findById(Integer id) {
         Optional<Report> optionalReport = reportDao.findById(id);
@@ -25,12 +30,8 @@ public class ReportService {
 
     public boolean generate() {
         // TODO: generate all reports
-        // add database entity?
+        // report store in DB
 
         return false;
-    }
-
-    public void remove(String hash) {
-        reportDao.deleteByHash(hash);
     }
 }

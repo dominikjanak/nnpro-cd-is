@@ -31,7 +31,7 @@ public class FireBrigadeUnitController {
     }
 
     @PostMapping("/")
-    public ApiResponse<FireBrigadeUnit> createFireBrigadeUnit(FireBrigadeUnitDto fireBrigadeUnitDto) {
+    public ApiResponse<FireBrigadeUnit> createFireBrigadeUnit(@RequestBody FireBrigadeUnitDto fireBrigadeUnitDto) {
         if (fireBrigadeUnitDto.getName().isEmpty()) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }

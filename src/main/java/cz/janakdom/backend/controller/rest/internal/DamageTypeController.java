@@ -38,7 +38,7 @@ public class DamageTypeController {
     }
 
     @PostMapping("/")
-    public ApiResponse<DamageType> createDamageType(DamageTypeDto damageTypeDto) {
+    public ApiResponse<DamageType> createDamageType(@RequestBody DamageTypeDto damageTypeDto) {
         if (damageTypeDto.getName().isEmpty()) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-NAME", null);
         }

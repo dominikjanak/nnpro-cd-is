@@ -30,7 +30,7 @@ public class CarriageController {
     }
 
     @PostMapping("/")
-    public ApiResponse<Carriage> createCarriage(CarriageDto carriageDto) {
+    public ApiResponse<Carriage> createCarriage(@RequestBody CarriageDto carriageDto) {
         if (carriageDto.getSerialNumber() == null || carriageDto.getSerialNumber().isEmpty()) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-SERIAL-NUMBER", null);
         }

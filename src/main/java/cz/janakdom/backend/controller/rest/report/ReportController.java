@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
@@ -32,6 +33,11 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
+    @GetMapping("/")
+    public List<Report> getReportsList() {
+        return reportService.findAll();
+    }
+
     @GetMapping("/{hash}")
     public String getReport(@PathVariable("hash") String hash, HttpServletResponse response) {
         Report report = reportService.findByHash(hash);
@@ -49,20 +55,6 @@ public class ReportController {
             }
         }
         return null;
-    }
-
-    @DeleteMapping("/{hash}")
-    public ApiResponse<Void> removeReport(@PathVariable("hash") String hash) {
-        Report report = reportService.findByHash(hash);
-        if (report != null) {
-            reportService.remove(hash);
-        }
-
-        if(report != null) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
-        }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
-
     }
 
     @PostMapping("/generate")
