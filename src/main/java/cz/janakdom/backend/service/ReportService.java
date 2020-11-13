@@ -15,7 +15,7 @@ public class ReportService {
     private ReportDao reportDao;
 
     public List<Report> findAll() {
-        return reportDao.findAllByOrderByIdContentDesc();
+        return reportDao.findAllByOrderByIdDesc();
     }
 
     public Report findById(Integer id) {
