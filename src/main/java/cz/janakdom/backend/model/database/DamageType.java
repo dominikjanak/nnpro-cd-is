@@ -28,5 +28,5 @@ public class DamageType {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "damageType")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private final List<Damage> damages = new ArrayList<>();
+    private List<Damage> damages = new ArrayList<>();
 }
