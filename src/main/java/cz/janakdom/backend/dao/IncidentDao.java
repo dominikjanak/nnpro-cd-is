@@ -1,12 +1,22 @@
 package cz.janakdom.backend.dao;
 
 import cz.janakdom.backend.model.database.Incident;
+import cz.janakdom.backend.model.database.Region;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IncidentDao extends JpaRepository<Incident, Integer> {
-    List<Incident> findAllByPremiseIncidentIsNotNullAndSecurityIncidentIsNull(); // all premise incidents
-    List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNull(); // all security incidents
-    List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNull(); // all fire incidents
+    // all premise incidents
+    List<Incident> findAllByRegionInOrderByCreationDatetimeDesc(List<Region> region);
+
+    // all premise incidents
+    List<Incident> findAllByPremiseIncidentIsNotNullAndSecurityIncidentIsNullAndRegionInOrderByCreationDatetimeDesc(List<Region> region);
+
+    // all security incidents
+    List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNullAndRegionInOrderByCreationDatetimeDesc(List<Region> region);
+
+    // all fire incidents
+    List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndRegionInOrderByCreationDatetimeDesc(List<Region> region);
 }

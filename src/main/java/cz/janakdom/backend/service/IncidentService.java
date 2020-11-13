@@ -2,6 +2,7 @@ package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.IncidentDao;
 import cz.janakdom.backend.model.database.Incident;
+import cz.janakdom.backend.model.database.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,20 +20,20 @@ public class IncidentService {
     @Autowired
     private SecurityIncidentService securityIncidentService;
 
-    public List<Incident> getAll() {
-        return incidentDao.findAll();
+    public List<Incident> getAll(List<Region> regions) {
+        return incidentDao.findAllByRegionInOrderByCreationDatetimeDesc(regions);
     }
 
-    public List<Incident> getAllPremise() {
-        return incidentDao.findAllByPremiseIncidentIsNotNullAndSecurityIncidentIsNull();
+    public List<Incident> getAllPremise(List<Region> regions) {
+        return incidentDao.findAllByPremiseIncidentIsNotNullAndSecurityIncidentIsNullAndRegionInOrderByCreationDatetimeDesc(regions);
     }
 
-    public List<Incident> getAllSecurtiy() {
-        return incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNull();
+    public List<Incident> getAllSecurtiy(List<Region> regions) {
+        return incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNullAndRegionInOrderByCreationDatetimeDesc(regions);
     }
 
-    public List<Incident> getAllFire() {
-        return incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNull();
+    public List<Incident> getAllFire(List<Region> regions) {
+        return incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndRegionInOrderByCreationDatetimeDesc(regions);
     }
 
     public Incident findById(Integer id) {
