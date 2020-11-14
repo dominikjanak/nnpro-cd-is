@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.sql.Blob;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -19,9 +20,6 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 150, unique = true)
-    private String name;
-
     @Column(nullable = false, length = 64, unique = true)
     private String hash;
 
@@ -31,19 +29,18 @@ public class Report {
     @Column(nullable = false)
     private ReportType type;
 
-    @JsonIgnore
-    @Column(nullable = false)
-    private Boolean isDeleted = false;
-
     @Lob
     @Column(nullable = false)
     private Blob content;
 
+    // application/pdf
     @Column(nullable = false)
     private String contentType;
 
+    // LocalDateTime
+    // created = LocalDateTime.now();
     @Column(nullable = false)
-    private Date created;
+    private LocalDateTime created = LocalDateTime.now();
 }
 
 
