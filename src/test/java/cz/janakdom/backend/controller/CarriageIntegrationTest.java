@@ -52,8 +52,7 @@ public class CarriageIntegrationTest {
         Carriage carriage = creator.saveEntity(new Carriage());
 
         ApiResponse<Void> response = carriageController.deleteCarriage(carriage.getId() * 2);
-        ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID", null);
-        // TODO: Change expected 400 INVALID to 404 NOT-FOUND?
+        ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
         Assertions.assertThat(response).isEqualTo(expected);
 
         verifyCrud(carriage.getId(), carriage, Arrays.asList(carriage)); // There should be still ona carriage in DB.
