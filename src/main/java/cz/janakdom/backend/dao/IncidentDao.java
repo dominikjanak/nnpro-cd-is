@@ -20,10 +20,10 @@ public interface IncidentDao extends JpaRepository<Incident, Integer> {
     // all fire incidents
     List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndRegionInOrderByCreationDatetimeDesc(List<Region> region);
 
-    //all security incidents
+    // security incidents between two dates (inclusive)
     List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNullAndCreationDatetimeBetween(LocalDateTime start, LocalDateTime end);
 
-    //all fire incidents
+    // fire incidents between two dates (inclusive)
     List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndCreationDatetimeBetween(LocalDateTime start, LocalDateTime end);
 
 }

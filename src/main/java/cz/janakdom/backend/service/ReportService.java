@@ -183,7 +183,10 @@ public class ReportService {
     }
 
     public boolean delete(String hash) {
-        reportDao.deleteByHash(hash);
+        Report report = findByHash(hash);
+        if (report == null)
+            return false;
+        reportDao.delete(report);
         return true;
     }
 }

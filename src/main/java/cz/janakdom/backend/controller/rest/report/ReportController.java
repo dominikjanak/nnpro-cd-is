@@ -106,7 +106,7 @@ public class ReportController {
     }
 
     @DeleteMapping("/{hash}")
-    public ApiResponse<Railroad> deleteReport(@PathVariable("hash") String hash) {
+    public ApiResponse<Void> deleteReport(@PathVariable("hash") String hash) {
         User authenticatedUser = securityContext.getAuthenticatedUser();
         if (!userService.checkPermission(AuthLevel.ADMIN, authenticatedUser)) {
             return new ApiResponse<>(HttpStatus.FORBIDDEN.value(), "INVALID-AUTHORIZATION", null);
