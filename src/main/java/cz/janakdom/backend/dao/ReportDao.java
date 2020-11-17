@@ -9,6 +9,5 @@ import java.util.Optional;
 
 public interface ReportDao extends JpaRepository<Report, Integer> {
     Optional<Report> findByHash(String hash);
-    void deleteByHash(String hash);
     List<Report> findAllByTypeOrderByIdDesc(ReportType type);
 }

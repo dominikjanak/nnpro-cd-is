@@ -4,7 +4,7 @@ import cz.janakdom.backend.model.database.Incident;
 import cz.janakdom.backend.model.database.Region;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Collection;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IncidentDao extends JpaRepository<Incident, Integer> {
@@ -19,4 +19,12 @@ public interface IncidentDao extends JpaRepository<Incident, Integer> {
 
     // all fire incidents
     List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndRegionInOrderByCreationDatetimeDesc(List<Region> region);
+
+    //all security incidents
+    List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNullAndCreationDatetimeBetween(LocalDateTime start, LocalDateTime end);
+
+    //all fire incidents
+    List<Incident> findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndCreationDatetimeBetween(LocalDateTime start, LocalDateTime end);
+
 }
+
