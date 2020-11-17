@@ -4,6 +4,7 @@ import com.itextpdf.text.DocumentException;
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.Railroad;
 import cz.janakdom.backend.model.database.Report;
+import cz.janakdom.backend.model.dto.report.GenerateReportDto;
 import cz.janakdom.backend.model.enums.ReportType;
 import cz.janakdom.backend.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +58,19 @@ public class ReportController {
     }
 
     @PostMapping("/generate")
-    public ApiResponse<Railroad> generateReports() throws DocumentException, SQLException, NoSuchAlgorithmException {
-        boolean generated = reportService.generate();
+    public ApiResponse<Railroad> generateReports(@RequestBody GenerateReportDto inputModel)
+            throws DocumentException, SQLException, NoSuchAlgorithmException {
 
-        if (generated) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        String token = inputModel.getToken();
+
+        if(token.equals("K4Cc1TIhe7c5ZcVoavIntxCv213cld5G7w2Y7qKSdosls18yG3d1Kyg683Qo0iZ1")){
+            boolean generated = reportService.generate();
+
+            if (generated) {
+                return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+            }
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-REPORT-TYPE", null);
         }
-        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "INVALID-REPORT-TYPE", null);
+        return new ApiResponse<>(HttpStatus.FORBIDDEN.value(), "INVALID-TOKEN", null);
     }
 }
