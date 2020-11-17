@@ -51,9 +51,16 @@ public class ReportService {
         return optionalReport.orElse(null);
     }
 
-    public boolean generate() throws DocumentException, SQLException, NoSuchAlgorithmException {
-        List<Incident> secure = incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNullAndCreationDatetimeBetween(setStartDate(), setEndDate());
-        List<Incident> fire = incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndCreationDatetimeBetween(setStartDate(), setEndDate());
+    public int generate() throws DocumentException, SQLException, NoSuchAlgorithmException {
+        // reports with specific name already exists
+        if (reportDao.existsByFilenameOrFilename(getReportName(ReportType.HZS), getReportName(ReportType.POLICE))) {
+            return 1;
+        }
+
+        LocalDateTime from = setStartDate();
+        LocalDateTime to = setEndDate().minusSeconds(1);
+        List<Incident> secure = incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNullAndCreationDatetimeBetween(from, to);
+        List<Incident> fire = incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndCreationDatetimeBetween(from, to);
 
         Document hzsDocument = new Document(PageSize.A4);
         Document policeDokument = new Document(PageSize.A4);
@@ -67,11 +74,11 @@ public class ReportService {
         hzsDocument.open();
         policeDokument.open();
 
-        hzsDocument.add(new Paragraph("HZS Report", FontFactory.getFont(FontFactory.TIMES_ROMAN, 28, BaseColor.BLACK)));
-        hzsDocument.add(Chunk.NEWLINE);
+        //hzsDocument.add(new Paragraph("HZS Report", FontFactory.getFont(FontFactory.TIMES_ROMAN, 28, BaseColor.BLACK)));
+        //hzsDocument.add(Chunk.NEWLINE);
 
-        policeDokument.add(new Paragraph("Policie Report", FontFactory.getFont(FontFactory.TIMES_ROMAN, 28, BaseColor.BLACK)));
-        policeDokument.add(Chunk.NEWLINE);
+        //policeDokument.add(new Paragraph("Policie Report", FontFactory.getFont(FontFactory.TIMES_ROMAN, 28, BaseColor.BLACK)));
+        //policeDokument.add(Chunk.NEWLINE);
 
         //for HZS
         int reportCounter = 1;
@@ -81,7 +88,7 @@ public class ReportService {
                 FireIncident fireIncident = securityIncident.getFireIncident();
                 if (fireIncident != null) {
 
-                    hzsDocument.add(new Paragraph("Report " + reportCounter, FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, BaseColor.BLACK)));
+                    hzsDocument.add(new Paragraph("Požární incident " + reportCounter, FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, BaseColor.BLACK)));
                     hzsDocument.add(Chunk.NEWLINE);
 
                     hzsDocument.add(new Paragraph("Vytvoril: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname()));
@@ -109,7 +116,7 @@ public class ReportService {
         for (Incident incident : secure) {
             SecurityIncident securityIncident = incident.getSecurityIncident();
             if (securityIncident != null) {
-                policeDokument.add(new Paragraph("Report " + reportCounter, FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, BaseColor.BLACK)));
+                policeDokument.add(new Paragraph("Bezpečnostní incident " + reportCounter, FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, BaseColor.BLACK)));
                 policeDokument.add(Chunk.NEWLINE);
 
                 policeDokument.add(new Paragraph("Vytvoril: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname()));
@@ -133,37 +140,21 @@ public class ReportService {
         policeDokument.close();
         saveReport(hzsStream, ReportType.HZS);
         saveReport(policeStream, ReportType.POLICE);
-        return true;
+        return 0;
     }
 
     private LocalDateTime setStartDate() {
-        int mesic;
-        if (LocalDateTime.now().getMonthValue() == 1)
-            mesic = 12;
-        else
-            mesic = LocalDateTime.now().getMonthValue() - 1;
-
-        LocalDateTime ldt = LocalDateTime.now()
-                .withYear(LocalDateTime.now().getYear())
-                .withMonth(mesic)
-                .withDayOfMonth(1)
-                .withHour(0)
-                .withMinute(0)
-                .withSecond(0)
-                .withNano(0);
-
+        LocalDateTime ldt = setEndDate().minusMonths(1);
         return ldt;
     }
+
     private LocalDateTime setEndDate() {
         LocalDateTime ldt = LocalDateTime.now()
-                .withYear(LocalDateTime.now().getYear())
-                .withMonth(LocalDateTime.now().getMonthValue())
                 .withDayOfMonth(1)
                 .withHour(0)
                 .withMinute(0)
                 .withSecond(0)
                 .withNano(0);
-
         return ldt;
     }
 
@@ -171,7 +162,7 @@ public class ReportService {
         Report report = new Report();
         Blob blob = new SerialBlob(stream.toByteArray());
         report.setContent(blob);
-        String filename = reportType + "_REPORT_" + LocalDateTime.now().getMonth() + "-" + LocalDateTime.now().getYear();
+        String filename = getReportName(reportType);
         report.setFilename(filename);
         report.setHash(md5Generator(filename));
 
@@ -181,9 +172,18 @@ public class ReportService {
         reportDao.save(report);
     }
 
+    private String getReportName(ReportType reportType) {
+        return reportType + "_REPORT_" + LocalDateTime.now().getMonth() + "-" + LocalDateTime.now().getYear();
+    }
+
     private String md5Generator(String filename) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         byte[] digest = md.digest(filename.getBytes(StandardCharsets.UTF_8));
         return DatatypeConverter.printHexBinary(digest);
+    }
+
+    public boolean delete(String hash) {
+        reportDao.deleteByHash(hash);
+        return true;
     }
 }

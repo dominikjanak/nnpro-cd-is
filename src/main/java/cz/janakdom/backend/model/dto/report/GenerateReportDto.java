@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class GenerateReportDto {
     private String token;
+    private Boolean force = false;
 }
