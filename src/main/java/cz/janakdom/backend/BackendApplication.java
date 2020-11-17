@@ -6,10 +6,15 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Date;
+import java.util.TimeZone;
+
 @SpringBootApplication
 public class BackendApplication extends SpringBootServletInitializer implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
+		TimeZone.setDefault(TimeZone.getTimeZone("Europe/Prague"));
+		System.out.println("Local datetime: " + new Date().toString());
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
