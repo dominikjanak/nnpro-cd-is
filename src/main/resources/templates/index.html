@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Background app</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -9,6 +9,8 @@
 <p><a href="/swagger-ui.html">Show REST API Documentation</a></p>
 <h1>Backend H2 Console</h1>
 <p><a href="/h2-console">Debug console (only local for h2)</a></p>
+
+<p th:text="${datetime}"></p>
 </body>
 </html>
 
