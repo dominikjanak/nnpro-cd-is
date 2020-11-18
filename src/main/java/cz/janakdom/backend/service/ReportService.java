@@ -5,10 +5,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
 import cz.janakdom.backend.dao.IncidentDao;
 import cz.janakdom.backend.dao.ReportDao;
-import cz.janakdom.backend.model.database.FireIncident;
-import cz.janakdom.backend.model.database.Incident;
-import cz.janakdom.backend.model.database.Report;
-import cz.janakdom.backend.model.database.SecurityIncident;
+import cz.janakdom.backend.model.database.*;
 import cz.janakdom.backend.model.enums.ReportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,6 +79,8 @@ public class ReportService {
         policeDokument.open();
 
         int reportCounter = 1;
+        double price = 0;
+
         policeDokument.add(new Paragraph("Policie Report", title));
         policeDokument.add(Chunk.NEWLINE);
         //for police
@@ -92,17 +91,23 @@ public class ReportService {
                 policeDokument.add(new Paragraph("Bezpečnostní incident " + reportCounter, font));
                 policeDokument.add(Chunk.NEWLINE);
 
-                policeDokument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(),font));
-                policeDokument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(),font));
-                policeDokument.add(new Paragraph("Lokace: " + incident.getLocation(),font));
-                policeDokument.add(new Paragraph("Region: " + incident.getRegion(),font));
-                policeDokument.add(new Paragraph("Poznámka:",font));
-                policeDokument.add(new Paragraph(incident.getNote(),font));
+                policeDokument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(), font));
+                policeDokument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(), font));
+                policeDokument.add(new Paragraph("Lokace: " + incident.getLocation(), font));
+                policeDokument.add(new Paragraph("Region: " + incident.getRegion(), font));
+                policeDokument.add(new Paragraph("Poznámka:", font));
+                policeDokument.add(new Paragraph(incident.getNote(), font));
                 policeDokument.add(Chunk.NEWLINE);
-                policeDokument.add(new Paragraph("Popis:",font));
-                policeDokument.add(new Paragraph(incident.getDescription(),font));
+                policeDokument.add(new Paragraph("Popis:", font));
+                policeDokument.add(new Paragraph(incident.getDescription(), font));
                 if (securityIncident.getCrime())
-                    policeDokument.add(new Paragraph("Incident byl klasifikován jako kriminální čin.",font));
+                    policeDokument.add(new Paragraph("Incident byl klasifikován jako kriminální čin.", font));
+
+                List<Damage> listDamages = securityIncident.getDamages();
+                for (Damage damage : listDamages) {
+                    price += damage.getFinanceValue();
+                }
+
                 reportCounter++;
 
                 policeDokument.newPage();
@@ -119,18 +124,23 @@ public class ReportService {
                         policeDokument.add(new Paragraph("Požární incident " + reportCounter, FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, BaseColor.BLACK)));
                         policeDokument.add(Chunk.NEWLINE);
 
-                        policeDokument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(),font));
-                        policeDokument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(),font));
-                        policeDokument.add(new Paragraph("Lokace: " + incident.getLocation(),font));
-                        policeDokument.add(new Paragraph("Region: " + incident.getRegion(),font));
-                        policeDokument.add(new Paragraph("Poznámka:",font));
-                        policeDokument.add(new Paragraph(incident.getNote(),font));
+                        policeDokument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(), font));
+                        policeDokument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(), font));
+                        policeDokument.add(new Paragraph("Lokace: " + incident.getLocation(), font));
+                        policeDokument.add(new Paragraph("Region: " + incident.getRegion(), font));
+                        policeDokument.add(new Paragraph("Poznámka:", font));
+                        policeDokument.add(new Paragraph(incident.getNote(), font));
                         policeDokument.add(Chunk.NEWLINE);
-                        policeDokument.add(new Paragraph("Popis:",font));
-                        policeDokument.add(new Paragraph(incident.getDescription(),font));
+                        policeDokument.add(new Paragraph("Popis:", font));
+                        policeDokument.add(new Paragraph(incident.getDescription(), font));
                         if (securityIncident.getCrime())
-                            policeDokument.add(new Paragraph("Incident byl klasifikován jako kriminální čin.",font));
-                        policeDokument.add(new Paragraph("Počet jednotek HZS: " + securityIncident.getFireBrigadeUnits().size(),font));
+                            policeDokument.add(new Paragraph("Incident byl klasifikován jako kriminální čin.", font));
+                        policeDokument.add(new Paragraph("Počet jednotek HZS: " + securityIncident.getFireBrigadeUnits().size(), font));
+
+                        List<Damage> listDamages = securityIncident.getDamages();
+                        for (Damage damage : listDamages) {
+                            price += damage.getFinanceValue();
+                        }
                         reportCounter++;
 
                         policeDokument.newPage();
@@ -141,6 +151,8 @@ public class ReportService {
 
         if (reportCounter == 1)
             policeDokument.add(new Paragraph("Žádný incident za minulý měsíc.", noReport));
+        else
+            policeDokument.add(new Paragraph("Celkem poškozen majetek za: "+price+" Kč", noReport));
         policeDokument.close();
         saveReport(policeStream, ReportType.POLICE);
     }
@@ -161,6 +173,7 @@ public class ReportService {
         hzsDocument.add(Chunk.NEWLINE);
 
         int reportCounter = 1;
+        double price = 0;
         for (Incident incident : fire) {
             SecurityIncident securityIncident = incident.getSecurityIncident();
             if (securityIncident != null) {
@@ -170,27 +183,35 @@ public class ReportService {
                     hzsDocument.add(new Paragraph("Požární incident " + reportCounter, font));
                     hzsDocument.add(Chunk.NEWLINE);
 
-                    hzsDocument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(),font));
-                    hzsDocument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(),font));
-                    hzsDocument.add(new Paragraph("Lokace: " + incident.getLocation(),font));
-                    hzsDocument.add(new Paragraph("Region: " + incident.getRegion(),font));
-                    hzsDocument.add(new Paragraph("Poznámka:",font));
-                    hzsDocument.add(new Paragraph(incident.getNote(),font));
+                    hzsDocument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(), font));
+                    hzsDocument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(), font));
+                    hzsDocument.add(new Paragraph("Lokace: " + incident.getLocation(), font));
+                    hzsDocument.add(new Paragraph("Region: " + incident.getRegion(), font));
+                    hzsDocument.add(new Paragraph("Poznámka:", font));
+                    hzsDocument.add(new Paragraph(incident.getNote(), font));
                     hzsDocument.add(Chunk.NEWLINE);
                     hzsDocument.add(new Paragraph("Popis:"));
-                    hzsDocument.add(new Paragraph(incident.getDescription(),font));
+                    hzsDocument.add(new Paragraph(incident.getDescription(), font));
                     hzsDocument.add(Chunk.NEWLINE);
                     if (securityIncident.getPolice())
-                        hzsDocument.add(new Paragraph("Na místě byla přítomna policie.",font));
-                    hzsDocument.add(new Paragraph("Počet jednotek HZS: " + securityIncident.getFireBrigadeUnits().size(),font));
+                        hzsDocument.add(new Paragraph("Na místě byla přítomna policie.", font));
+                    hzsDocument.add(new Paragraph("Počet jednotek HZS: " + securityIncident.getFireBrigadeUnits().size(), font));
+
+                    List<Damage> listDamages = securityIncident.getDamages();
+                    for (Damage damage : listDamages) {
+                        price += damage.getFinanceValue();
+                    }
+
                     reportCounter++;
 
                     hzsDocument.newPage();
                 }
             }
         }
-        if (reportCounter==1)
+        if (reportCounter == 1)
             hzsDocument.add(new Paragraph("Žádný incident za minulý měsíc.", noReport));
+        else
+            hzsDocument.add(new Paragraph("Celkem poškozen majetek za: "+price+" Kč", noReport));
 
         hzsDocument.close();
         saveReport(hzsStream, ReportType.HZS);
