@@ -96,10 +96,14 @@ public class ReportController {
 
     private ApiResponse<Void> handleResponse(int response) {
         switch (response) {
-            case 0:
-                return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
-            case 1:
-                return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "REPORTS-ALREADY-EXISTS", null);
+            case 5:
+                return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EXIST-BOTH", null);
+            case 6:
+                return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS-POLICE", null);
+            case 9:
+                return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS-HZS", null);
+            case 10:
+                return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS-BOTH", null);
             default:
                 return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "UNKNOWN-ERROR", null);
         }

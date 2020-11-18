@@ -55,18 +55,27 @@ public class ReportService {
 
     public int generate() throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
         // reports with specific name already exists
-        if (reportDao.existsByFilenameOrFilename(getReportName(ReportType.HZS), getReportName(ReportType.POLICE))) {
-            return 1;
-        }
-
         LocalDateTime from = setStartDate();
         LocalDateTime to = setEndDate().minusSeconds(1);
         List<Incident> secure = incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNullAndCreationDatetimeBetween(from, to);
         List<Incident> fire = incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndCreationDatetimeBetween(from, to);
 
-        generateHZSReport(secure, fire);
-        generatePoliceReport(secure, fire);
-        return 0;
+        int res = 0;
+
+        if (reportDao.existsByFilename(getReportName(ReportType.POLICE))) {
+            res |= 1;
+        } else {
+            generatePoliceReport(secure, fire);
+            res |= 2;
+        }
+
+        if (reportDao.existsByFilename(getReportName(ReportType.HZS))) {
+            res |= 4;
+        } else {
+            generateHZSReport(secure, fire);
+            res |= 8;
+        }
+        return res;
     }
 
     private void generatePoliceReport(List<Incident> secure, List<Incident> fire) throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
