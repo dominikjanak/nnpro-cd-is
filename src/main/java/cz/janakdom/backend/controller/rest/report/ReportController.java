@@ -70,7 +70,7 @@ public class ReportController {
 
     @PostMapping("/generate")
     public ApiResponse<Void> generateReports(@RequestBody GenerateReportDto inputModel)
-            throws DocumentException, SQLException, NoSuchAlgorithmException {
+            throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
         String token = inputModel.getToken();
 
         if (token != null && token.equals("K4Cc1TIhe7c5ZcVoavIntxCv213cld5G7w2Y7qKSdosls18yG3d1Kyg683Qo0iZ1")) {
@@ -84,7 +84,7 @@ public class ReportController {
 
     @PostMapping("/admin-generate")
     public ApiResponse<Void> adminGenerateReports()
-            throws DocumentException, SQLException, NoSuchAlgorithmException {
+            throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
 
         User authenticatedUser = securityContext.getAuthenticatedUser();
 

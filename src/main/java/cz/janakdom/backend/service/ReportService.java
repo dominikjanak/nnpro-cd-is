@@ -1,6 +1,7 @@
 package cz.janakdom.backend.service;
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
 import cz.janakdom.backend.dao.IncidentDao;
 import cz.janakdom.backend.dao.ReportDao;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -51,7 +53,7 @@ public class ReportService {
         return optionalReport.orElse(null);
     }
 
-    public int generate() throws DocumentException, SQLException, NoSuchAlgorithmException {
+    public int generate() throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
         // reports with specific name already exists
         if (reportDao.existsByFilenameOrFilename(getReportName(ReportType.HZS), getReportName(ReportType.POLICE))) {
             return 1;
@@ -62,25 +64,102 @@ public class ReportService {
         List<Incident> secure = incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNullAndCreationDatetimeBetween(from, to);
         List<Incident> fire = incidentDao.findAllBySecurityIncidentIsNotNullAndPremiseIncidentIsNullAndSecurityIncidentFireIncidentIsNotNullAndCreationDatetimeBetween(from, to);
 
-        Document hzsDocument = new Document(PageSize.A4);
+        generateHZSReport(secure, fire);
+        generatePoliceReport(secure, fire);
+        return 0;
+    }
+
+    private void generatePoliceReport(List<Incident> secure, List<Incident> fire) throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
         Document policeDokument = new Document(PageSize.A4);
-
-        ByteArrayOutputStream hzsStream = new ByteArrayOutputStream();
         ByteArrayOutputStream policeStream = new ByteArrayOutputStream();
-
-        PdfWriter.getInstance(hzsDocument, hzsStream);
         PdfWriter.getInstance(policeDokument, policeStream);
 
-        hzsDocument.open();
+        BaseFont baseFont = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1250, BaseFont.EMBEDDED);
+        Font font = new Font(baseFont, 12, Font.NORMAL);
+        Font title = new Font(baseFont, 26, Font.NORMAL);
+        Font noReport = new Font(baseFont, 16, Font.NORMAL);
+
         policeDokument.open();
 
-        //hzsDocument.add(new Paragraph("HZS Report", FontFactory.getFont(FontFactory.TIMES_ROMAN, 28, BaseColor.BLACK)));
-        //hzsDocument.add(Chunk.NEWLINE);
+        int reportCounter = 1;
+        policeDokument.add(new Paragraph("Policie Report", title));
+        policeDokument.add(Chunk.NEWLINE);
+        //for police
+        //security incidents
+        for (Incident incident : secure) {
+            SecurityIncident securityIncident = incident.getSecurityIncident();
+            if (securityIncident != null) {
+                policeDokument.add(new Paragraph("Bezpečnostní incident " + reportCounter, font));
+                policeDokument.add(Chunk.NEWLINE);
 
-        //policeDokument.add(new Paragraph("Policie Report", FontFactory.getFont(FontFactory.TIMES_ROMAN, 28, BaseColor.BLACK)));
-        //policeDokument.add(Chunk.NEWLINE);
+                policeDokument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(),font));
+                policeDokument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(),font));
+                policeDokument.add(new Paragraph("Lokace: " + incident.getLocation(),font));
+                policeDokument.add(new Paragraph("Region: " + incident.getRegion(),font));
+                policeDokument.add(new Paragraph("Poznámka:",font));
+                policeDokument.add(new Paragraph(incident.getNote(),font));
+                policeDokument.add(Chunk.NEWLINE);
+                policeDokument.add(new Paragraph("Popis:",font));
+                policeDokument.add(new Paragraph(incident.getDescription(),font));
+                if (securityIncident.getCrime())
+                    policeDokument.add(new Paragraph("Incident byl klasifikován jako kriminální čin.",font));
+                reportCounter++;
 
-        //for HZS
+                policeDokument.newPage();
+            }
+        }
+        //for police
+        //fire incidents
+        for (Incident incident : fire) {
+            SecurityIncident securityIncident = incident.getSecurityIncident();
+            if (securityIncident != null) {
+                FireIncident fireIncident = securityIncident.getFireIncident();
+                if (fireIncident != null) {
+                    if (securityIncident.getPolice()) {
+                        policeDokument.add(new Paragraph("Požární incident " + reportCounter, FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, BaseColor.BLACK)));
+                        policeDokument.add(Chunk.NEWLINE);
+
+                        policeDokument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(),font));
+                        policeDokument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(),font));
+                        policeDokument.add(new Paragraph("Lokace: " + incident.getLocation(),font));
+                        policeDokument.add(new Paragraph("Region: " + incident.getRegion(),font));
+                        policeDokument.add(new Paragraph("Poznámka:",font));
+                        policeDokument.add(new Paragraph(incident.getNote(),font));
+                        policeDokument.add(Chunk.NEWLINE);
+                        policeDokument.add(new Paragraph("Popis:",font));
+                        policeDokument.add(new Paragraph(incident.getDescription(),font));
+                        if (securityIncident.getCrime())
+                            policeDokument.add(new Paragraph("Incident byl klasifikován jako kriminální čin.",font));
+                        policeDokument.add(new Paragraph("Počet jednotek HZS: " + securityIncident.getFireBrigadeUnits().size(),font));
+                        reportCounter++;
+
+                        policeDokument.newPage();
+                    }
+                }
+            }
+        }
+
+        if (reportCounter == 1)
+            policeDokument.add(new Paragraph("Žádný incident za minulý měsíc.", noReport));
+        policeDokument.close();
+        saveReport(policeStream, ReportType.POLICE);
+    }
+
+    private void generateHZSReport(List<Incident> secure, List<Incident> fire) throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
+        Document hzsDocument = new Document(PageSize.A4);
+        ByteArrayOutputStream hzsStream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(hzsDocument, hzsStream);
+
+        BaseFont baseFont = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1250, BaseFont.EMBEDDED);
+        Font font = new Font(baseFont, 12, Font.NORMAL);
+        Font title = new Font(baseFont, 26, Font.NORMAL);
+        Font noReport = new Font(baseFont, 16, Font.NORMAL);
+
+        hzsDocument.open();
+
+        hzsDocument.add(new Paragraph("HZS Report", title));
+        hzsDocument.add(Chunk.NEWLINE);
+
         int reportCounter = 1;
         for (Incident incident : fire) {
             SecurityIncident securityIncident = incident.getSecurityIncident();
@@ -88,59 +167,33 @@ public class ReportService {
                 FireIncident fireIncident = securityIncident.getFireIncident();
                 if (fireIncident != null) {
 
-                    hzsDocument.add(new Paragraph("Požární incident " + reportCounter, FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, BaseColor.BLACK)));
+                    hzsDocument.add(new Paragraph("Požární incident " + reportCounter, font));
                     hzsDocument.add(Chunk.NEWLINE);
 
-                    hzsDocument.add(new Paragraph("Vytvoril: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname()));
-                    hzsDocument.add(new Paragraph("Vytvoreno: " + incident.getCreationDatetime()));
-                    hzsDocument.add(new Paragraph("Lokace: " + incident.getLocation()));
-                    hzsDocument.add(new Paragraph("Region: " + incident.getRegion()));
-                    hzsDocument.add(new Paragraph("Poznamka:"));
-                    hzsDocument.add(new Paragraph(incident.getNote()));
+                    hzsDocument.add(new Paragraph("Vytvořil: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname(),font));
+                    hzsDocument.add(new Paragraph("Vytvořeno: " + incident.getCreationDatetime(),font));
+                    hzsDocument.add(new Paragraph("Lokace: " + incident.getLocation(),font));
+                    hzsDocument.add(new Paragraph("Region: " + incident.getRegion(),font));
+                    hzsDocument.add(new Paragraph("Poznámka:",font));
+                    hzsDocument.add(new Paragraph(incident.getNote(),font));
                     hzsDocument.add(Chunk.NEWLINE);
                     hzsDocument.add(new Paragraph("Popis:"));
-                    hzsDocument.add(new Paragraph(incident.getDescription()));
+                    hzsDocument.add(new Paragraph(incident.getDescription(),font));
                     hzsDocument.add(Chunk.NEWLINE);
                     if (securityIncident.getPolice())
-                        hzsDocument.add(new Paragraph("Na miste byla pritomna policie."));
-                    hzsDocument.add(new Paragraph("Pocet jednotek HZS: " + securityIncident.getFireBrigadeUnits().size()));
+                        hzsDocument.add(new Paragraph("Na místě byla přítomna policie.",font));
+                    hzsDocument.add(new Paragraph("Počet jednotek HZS: " + securityIncident.getFireBrigadeUnits().size(),font));
                     reportCounter++;
 
                     hzsDocument.newPage();
                 }
             }
         }
-
-        //for police
-        reportCounter = 1;
-        for (Incident incident : secure) {
-            SecurityIncident securityIncident = incident.getSecurityIncident();
-            if (securityIncident != null) {
-                policeDokument.add(new Paragraph("Bezpečnostní incident " + reportCounter, FontFactory.getFont(FontFactory.TIMES_ROMAN, 16, BaseColor.BLACK)));
-                policeDokument.add(Chunk.NEWLINE);
-
-                policeDokument.add(new Paragraph("Vytvoril: " + incident.getOwner().getFirstname() + " " + incident.getOwner().getSurname()));
-                policeDokument.add(new Paragraph("Vytvoreno: " + incident.getCreationDatetime()));
-                policeDokument.add(new Paragraph("Lokace: " + incident.getLocation()));
-                policeDokument.add(new Paragraph("Region: " + incident.getRegion()));
-                policeDokument.add(new Paragraph("Poznamka:"));
-                policeDokument.add(new Paragraph(incident.getNote()));
-                policeDokument.add(Chunk.NEWLINE);
-                policeDokument.add(new Paragraph("Popis:"));
-                policeDokument.add(new Paragraph(incident.getDescription()));
-                if (securityIncident.getCrime())
-                    policeDokument.add(new Paragraph("Incident byl klasifikovan jako kriminalni cin."));
-                reportCounter++;
-
-                policeDokument.newPage();
-            }
-        }
+        if (reportCounter==1)
+            hzsDocument.add(new Paragraph("Žádný incident za minulý měsíc.", noReport));
 
         hzsDocument.close();
-        policeDokument.close();
         saveReport(hzsStream, ReportType.HZS);
-        saveReport(policeStream, ReportType.POLICE);
-        return 0;
     }
 
     private LocalDateTime setStartDate() {
