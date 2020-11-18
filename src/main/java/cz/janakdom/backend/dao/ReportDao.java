@@ -11,5 +11,5 @@ public interface ReportDao extends JpaRepository<Report, Integer> {
     Optional<Report> findByHash(String hash);
     List<Report> findAllByTypeOrderByIdDesc(ReportType type);
     void deleteByHash(String hash);
-    boolean existsByFilenameOrFilename(String filename, String filename2);
+    boolean existsByFilename(String filename);
 }
