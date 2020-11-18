@@ -20,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,23 +60,23 @@ public class ReportService {
 
         int res = 0;
 
-        if (reportDao.existsByFilename(getReportName(ReportType.POLICE))) {
+        if (reportDao.existsByFilename(getReportName(ReportType.POLICE, from))) {
             res |= 1;
         } else {
-            generatePoliceReport(secure, fire);
+            generatePoliceReport(secure, fire, from);
             res |= 2;
         }
 
-        if (reportDao.existsByFilename(getReportName(ReportType.HZS))) {
+        if (reportDao.existsByFilename(getReportName(ReportType.HZS, from))) {
             res |= 4;
         } else {
-            generateHZSReport(secure, fire);
+            generateHZSReport(secure, fire, from);
             res |= 8;
         }
         return res;
     }
 
-    private void generatePoliceReport(List<Incident> secure, List<Incident> fire) throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
+    private void generatePoliceReport(List<Incident> secure, List<Incident> fire, LocalDateTime time) throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
         Document policeDokument = new Document(PageSize.A4);
         ByteArrayOutputStream policeStream = new ByteArrayOutputStream();
         PdfWriter.getInstance(policeDokument, policeStream);
@@ -163,10 +164,10 @@ public class ReportService {
         else
             policeDokument.add(new Paragraph("Celkem poškozen majetek za: "+price+" Kč", noReport));
         policeDokument.close();
-        saveReport(policeStream, ReportType.POLICE);
+        saveReport(policeStream, ReportType.POLICE, time);
     }
 
-    private void generateHZSReport(List<Incident> secure, List<Incident> fire) throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
+    private void generateHZSReport(List<Incident> secure, List<Incident> fire, LocalDateTime time) throws DocumentException, SQLException, NoSuchAlgorithmException, IOException {
         Document hzsDocument = new Document(PageSize.A4);
         ByteArrayOutputStream hzsStream = new ByteArrayOutputStream();
         PdfWriter.getInstance(hzsDocument, hzsStream);
@@ -223,7 +224,7 @@ public class ReportService {
             hzsDocument.add(new Paragraph("Celkem poškozen majetek za: "+price+" Kč", noReport));
 
         hzsDocument.close();
-        saveReport(hzsStream, ReportType.HZS);
+        saveReport(hzsStream, ReportType.HZS, time);
     }
 
     private LocalDateTime setStartDate() {
@@ -241,11 +242,11 @@ public class ReportService {
         return ldt;
     }
 
-    private void saveReport(ByteArrayOutputStream stream, ReportType reportType) throws SQLException, NoSuchAlgorithmException {
+    private void saveReport(ByteArrayOutputStream stream, ReportType reportType, LocalDateTime time) throws SQLException, NoSuchAlgorithmException {
         Report report = new Report();
         Blob blob = new SerialBlob(stream.toByteArray());
         report.setContent(blob);
-        String filename = getReportName(reportType);
+        String filename = getReportName(reportType, time);
         report.setFilename(filename);
         report.setHash(md5Generator(filename));
 
@@ -255,8 +256,8 @@ public class ReportService {
         reportDao.save(report);
     }
 
-    private String getReportName(ReportType reportType) {
-        return reportType + "_REPORT_" + LocalDateTime.now().getMonth() + "-" + LocalDateTime.now().getYear();
+    private String getReportName(ReportType reportType, LocalDateTime time) {
+        return reportType + "_REPORT_" + month(time.getMonth()) + "-" + LocalDateTime.now().getYear();
     }
 
     private String md5Generator(String filename) throws NoSuchAlgorithmException {
@@ -271,5 +272,23 @@ public class ReportService {
             return false;
         reportDao.delete(report);
         return true;
+    }
+
+    private String month(Month month) {
+        switch(month) {
+            case JANUARY: return "LEDEN";
+            case FEBRUARY: return "UNOR";
+            case MARCH: return "BREZEN";
+            case APRIL: return "DUBEN";
+            case MAY: return "KVETEN";
+            case JUNE: return "CERVEN";
+            case JULY: return "CERVENEC";
+            case AUGUST: return "SRPEN";
+            case SEPTEMBER: return "ZARI";
+            case OCTOBER: return "RIJEN";
+            case NOVEMBER: return "LISTOPAD";
+            case DECEMBER: return "PROSINEC";
+        }
+        return "";
     }
 }
