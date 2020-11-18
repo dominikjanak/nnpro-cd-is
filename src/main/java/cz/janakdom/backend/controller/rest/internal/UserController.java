@@ -28,11 +28,6 @@ public class UserController {
 
     @GetMapping("/")
     public ApiResponse<List<User>> listUsers() {
-        User authenticatedUser = securityContext.getAuthenticatedUser();
-        if (!userService.checkPermission(AuthLevel.ADMIN, authenticatedUser)) {
-            return new ApiResponse<>(HttpStatus.FORBIDDEN.value(), "INVALID-AUTHORIZATION", null);
-        }
-
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", userService.findAll());
     }
 
