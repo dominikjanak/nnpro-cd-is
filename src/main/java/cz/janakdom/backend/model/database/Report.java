@@ -1,5 +1,6 @@
 package cz.janakdom.backend.model.database;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.janakdom.backend.model.enums.ReportType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,68 +33,15 @@ public class Report {
 
     @Lob
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Blob content;
 
-    // application/pdf
     @Column(nullable = false)
     private String contentType;
 
-    // LocalDateTime
-    // created = LocalDateTime.now();
     @Column(nullable = false)
     private LocalDateTime created = LocalDateTime.now();
 
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public void setType(ReportType type) {
-        this.type = type;
-    }
-
-    public void setContent(Blob content) {
-        this.content = content;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public ReportType getType() {
-        return type;
-    }
-
-    public Blob getContent() {
-        return content;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
 }
 
 

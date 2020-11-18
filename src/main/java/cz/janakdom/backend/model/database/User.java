@@ -57,4 +57,8 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "manager")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final List<SecurityIncident> responsibleFor = new ArrayList<>();
+
+    public String getFullName() {
+        return getFirstname() + " " + getSurname();
+    }
 }
