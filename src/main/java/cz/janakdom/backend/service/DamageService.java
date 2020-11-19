@@ -92,7 +92,7 @@ public class DamageService {
     }
 
     public String checkValidity(DamageDto inputModel) {
-        if (inputModel.getFinanceValue() < 0) {
+        if (inputModel.getFinanceValue() <= 0) {
             return "INVALID-FINANCE-VALUE";
         }
         if (inputModel.getAttackedObject().isEmpty()) {
