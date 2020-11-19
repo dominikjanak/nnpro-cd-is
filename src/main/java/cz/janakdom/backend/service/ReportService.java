@@ -160,7 +160,8 @@ public class ReportService {
         Carriage cr = si.getCarriage();
         documentAddLine(report, "Vůz: ", cr.getSerialNumber() + " " + cr.getProducer() + "-" + cr.getColor() + " (" + si.getCarriage().getHomeStation() + ")");
         documentAddLine(report, "Popis: ", i.getDescription(), true);
-        documentAddLine(report, "Poznámka: ", i.getNote(), true);
+        if(!i.getNote().equals(""))
+            documentAddLine(report, "Poznámka: ", i.getNote(), true);
 
         List<FireBrigadeUnit> fireBrigadeUnits = si.getFireBrigadeUnits();
         StringBuilder fireBridgeUnitsString = new StringBuilder();
