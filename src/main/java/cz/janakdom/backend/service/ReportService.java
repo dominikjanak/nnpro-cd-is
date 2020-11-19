@@ -130,8 +130,10 @@ public class ReportService {
             }
         }
         if (incidentCounter > 0) {
-            report.newPage();
-            documentAddLine(report, "Úhrn celkového poškození: ", nf(totalSum) + " Kč");
+            if(totalSum > 0) {
+                report.newPage();
+                documentAddLine(report, "Úhrn celkového poškození: ", nf(totalSum) + " Kč");
+            }
         } else {
             documentAddLine(report, "Žádný incidencident.", null);
         }
@@ -164,22 +166,26 @@ public class ReportService {
             documentAddLine(report, "Poznámka: ", i.getNote(), true);
 
         List<FireBrigadeUnit> fireBrigadeUnits = si.getFireBrigadeUnits();
-        StringBuilder fireBridgeUnitsString = new StringBuilder();
-        for (FireBrigadeUnit fireBrigadeUnit : fireBrigadeUnits) {
-            if (fireBridgeUnitsString.length() > 0)
-                fireBridgeUnitsString.append(", ");
-            fireBridgeUnitsString.append(fireBrigadeUnit.getName());
+        if(fireBrigadeUnits.size() > 0) {
+            StringBuilder fireBridgeUnitsString = new StringBuilder();
+            for (FireBrigadeUnit fireBrigadeUnit : fireBrigadeUnits) {
+                if (fireBridgeUnitsString.length() > 0)
+                    fireBridgeUnitsString.append(", ");
+                fireBridgeUnitsString.append(fireBrigadeUnit.getName());
+            }
+            documentAddLine(report, "Jednotky HZS: ", fireBridgeUnitsString.toString());
         }
-        documentAddLine(report, "Jednotky HZS: ", fireBridgeUnitsString.toString());
 
         List<AttackedSubject> attackedSubjects = si.getAttackedSubjects();
-        StringBuilder attackedSubjectsString = new StringBuilder();
-        for (AttackedSubject attackedSubject : attackedSubjects) {
-            if (attackedSubjectsString.length() > 0)
-                attackedSubjectsString.append(", ");
-            attackedSubjectsString.append(attackedSubject.getName());
+        if(attackedSubjects.size() > 0) {
+            StringBuilder attackedSubjectsString = new StringBuilder();
+            for (AttackedSubject attackedSubject : attackedSubjects) {
+                if (attackedSubjectsString.length() > 0)
+                    attackedSubjectsString.append(", ");
+                attackedSubjectsString.append(attackedSubject.getName());
+            }
+            documentAddLine(report, "Poškozené subjekty: ", attackedSubjectsString.toString());
         }
-        documentAddLine(report, "Poškozené subjekty: ", attackedSubjectsString.toString());
 
         documentAddNewLine(report);
         if (si.getPolice())
@@ -188,17 +194,21 @@ public class ReportService {
             documentAddLine(report, "Incident byl klasifikován jako kriminální čin.", null);
         if (si.getChecked())
             documentAddLine(report, "Incident byl zkontrolován.", null);
-        documentAddNewLine(report);
+
+        if(si.getPolice() || si.getCrime() || si.getChecked())
+            documentAddNewLine(report);
 
         List<Damage> damages = incidentType == IncidentType.FIRE ? fi.getDamages() : si.getDamages();
         double damageSum = 0;
-        documentAddLine(report, "Poškození:", null);
-        for (Damage damage : damages) {
-            documentAddLine(report, "      ", damage.getAttackedObject() + " - " + damage.getDamageType().getName() + " - " + nf(damage.getFinanceValue()) + " Kč");
-            damageSum += damage.getFinanceValue();
+        if(damages.size() > 0) {
+            documentAddLine(report, "Poškození:", null);
+            for (Damage damage : damages) {
+                documentAddLine(report, "      ", damage.getAttackedObject() + " - " + damage.getDamageType().getName() + " - " + nf(damage.getFinanceValue()) + " Kč");
+                damageSum += damage.getFinanceValue();
+            }
+            documentAddLine(report, "Poškození celkem za: ", nf(damageSum) + " Kč");
         }
 
-        documentAddLine(report, "Poškození celkem za: ", nf(damageSum) + " Kč");
         report.newPage();
         return damageSum;
     }
