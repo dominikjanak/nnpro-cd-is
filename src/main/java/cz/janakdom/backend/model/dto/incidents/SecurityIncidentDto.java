@@ -25,6 +25,7 @@ public class SecurityIncidentDto extends IncidentDto {
     private Boolean police;
     private int manager_id;
     private int carriage_id;
+    //private int building_id;
     private int railroad_id;
     private List<Integer> fireBrigadeUnit_ids = new ArrayList<>();
     private List<Integer> attackedSubject_ids = new ArrayList<>();

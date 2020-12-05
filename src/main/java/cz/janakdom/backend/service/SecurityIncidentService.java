@@ -93,7 +93,7 @@ public class SecurityIncidentService {
         incident.setCreationDatetime(inputModel.getCreationDatetime());
         incident.setLocation(inputModel.getLocation());
 
-
+        //TODO add carriage or building
         Carriage carriage = carriageService.findById(inputModel.getCarriage_id());
         if (carriage == null) {
             throw new Exception("CARRIAGE-NOT-FOUND");
