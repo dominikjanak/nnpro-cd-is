@@ -16,7 +16,6 @@ import javax.persistence.*;
 public class TelNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer id;
 
     @Column(nullable = false, length = 100)

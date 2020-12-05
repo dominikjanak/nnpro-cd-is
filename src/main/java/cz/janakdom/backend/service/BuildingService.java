@@ -38,6 +38,10 @@ public class BuildingService {
         return building.orElse(null);
     }
 
+    public List<Building> findAllNotDeleted(){
+        return buildingDao.findAllByIsDeletedFalse();
+    }
+
     public Building findByInnerno(String innerno) {
         Optional<Building> building = buildingDao.findByInnerno(innerno);
 

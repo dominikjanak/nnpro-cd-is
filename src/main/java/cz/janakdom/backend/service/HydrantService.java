@@ -2,6 +2,7 @@ package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.HydrantDao;
 import cz.janakdom.backend.dao.TechnicalSystemDao;
+import cz.janakdom.backend.model.database.Building;
 import cz.janakdom.backend.model.database.Hydrant;
 import cz.janakdom.backend.model.database.TechnicalSystem;
 import cz.janakdom.backend.model.dto.HydrantDto;
@@ -18,6 +19,8 @@ public class HydrantService {
 
     @Autowired
     private HydrantDao hydrantDao;
+    @Autowired
+    private BuildingService buildingService;
 
     public List<Hydrant> findAll() {
         return hydrantDao.findAll();
@@ -31,8 +34,13 @@ public class HydrantService {
     public Hydrant save(HydrantDto inputModel) {
         Hydrant hydrant = new Hydrant();
         BeanUtils.copyProperties(inputModel, hydrant, "id");
-
-        return hydrantDao.save(hydrant);
+        Building building = buildingService.findById(inputModel.getBuilding_id());
+        if (building != null){
+            hydrant.setBuilding(building);
+            return hydrantDao.save(hydrant);
+        } else{
+            return null;
+        }
     }
 
     public void deleteAllByBuildingId(Integer buildingId){

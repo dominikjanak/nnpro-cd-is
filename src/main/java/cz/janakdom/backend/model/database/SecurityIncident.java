@@ -37,13 +37,13 @@ public class SecurityIncident {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Incident incident;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)//change to true?
-    @JoinColumn(name = "carriage_id", nullable = false)//change to true?
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)//change to true?
+    @JoinColumn(name = "carriage_id", nullable = true)//change to true?
     private Carriage carriage;
 
-    //@ManyToOne(fetch = FetchType.EAGER, optional = true)
-    //@JoinColumn(name = "building_id", nullable = true)
-    //private Building building;
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "building_id", nullable = true)
+    private Building building;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fireIncident_id", referencedColumnName = "id")

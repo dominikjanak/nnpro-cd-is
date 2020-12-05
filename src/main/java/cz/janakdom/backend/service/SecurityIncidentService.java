@@ -36,6 +36,8 @@ public class SecurityIncidentService {
     private FireIncidentService fireIncidentService;
     @Autowired
     private DamageService damageService;
+    @Autowired
+    private BuildingService buildingService;
 
     @Transactional
     public Incident save(SecurityIncidentDto inputModel) throws Exception {
@@ -92,13 +94,22 @@ public class SecurityIncidentService {
         incident.setNote(inputModel.getNote());
         incident.setCreationDatetime(inputModel.getCreationDatetime());
         incident.setLocation(inputModel.getLocation());
-
-        //TODO add carriage or building
-        Carriage carriage = carriageService.findById(inputModel.getCarriage_id());
-        if (carriage == null) {
-            throw new Exception("CARRIAGE-NOT-FOUND");
+        System.out.println("car"+inputModel.getCarriage_id());
+        System.out.println("bui"+inputModel.getBuilding_id());
+        if (inputModel.getCarriage_id() != 0) {
+            Carriage carriage = carriageService.findById(inputModel.getCarriage_id());
+            if (carriage == null) {
+                throw new Exception("CARRIAGE-NOT-FOUND");
+            }
+            securityIncident.setCarriage(carriage);
         }
-        securityIncident.setCarriage(carriage);
+        if (inputModel.getBuilding_id() != 0) {
+            Building building = buildingService.findById(inputModel.getBuilding_id());
+            if (building == null) {
+                throw new Exception("BUILDING-NOT-FOUND");
+            }
+            securityIncident.setBuilding(building);
+        }
 
         Railroad railroad = railroadService.findById(inputModel.getRailroad_id());
         if (railroad == null) {

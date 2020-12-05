@@ -3,6 +3,7 @@ package cz.janakdom.backend.service;
 import cz.janakdom.backend.dao.FileDao;
 import cz.janakdom.backend.model.database.Building;
 import cz.janakdom.backend.model.database.FileDB;
+import cz.janakdom.backend.model.database.Hydrant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -55,6 +56,17 @@ public class FileService {
 
     public Stream<FileDB> getAllFilesByBuildingIdStream(Integer building_id) {
         return fileDao.findAllByBuildingId(building_id).stream();
+    }
+
+    public FileDB findById(Integer id){
+        Optional<FileDB> fileDB = fileDao.findById(id);
+        return fileDB.orElse(null);
+    }
+
+    public boolean delete(Integer id) {
+        FileDB fileDB = this.findById(id);
+        fileDao.delete(fileDB);
+        return true;
     }
 
 }

@@ -19,7 +19,6 @@ import java.util.List;
 public class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer id;
 
     @Column(nullable = false, length = 100)
@@ -68,8 +67,8 @@ public class Building {
     @OneToMany( mappedBy = "building")
     private List<Hydrant> hydrants;
 
-    /*@OneToMany(fetch = FetchType.LAZY, mappedBy = "building")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "building")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OrderColumn(name="INDEX") // Because persistentBag.equals(persistentBag) returns false even if both objects are empty.
-    private final List<SecurityIncident> securityIncidents = new ArrayList<>();*/
+    private final List<SecurityIncident> securityIncidents = new ArrayList<>();
 }

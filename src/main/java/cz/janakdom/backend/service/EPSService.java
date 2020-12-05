@@ -1,6 +1,7 @@
 package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.EPSDao;
+import cz.janakdom.backend.model.database.Building;
 import cz.janakdom.backend.model.database.EPS;
 import cz.janakdom.backend.model.database.FireExtinguisher;
 import cz.janakdom.backend.model.dto.EPSDto;
@@ -17,6 +18,8 @@ public class EPSService {
 
     @Autowired
     private EPSDao epsDao;
+    @Autowired
+    private BuildingService buildingService;
 
     public List<EPS> findAll() {
         return epsDao.findAll();
@@ -30,8 +33,13 @@ public class EPSService {
     public EPS save(EPSDto inputModel) {
         EPS eps = new EPS();
         BeanUtils.copyProperties(inputModel, eps, "id");
-
-        return epsDao.save(eps);
+        Building building = buildingService.findById(inputModel.getBuilding_id());
+        if (building != null){
+            eps.setBuilding(building);
+            return epsDao.save(eps);
+        } else{
+            return null;
+        }
     }
 
     public void deleteAllByBuildingId(Integer buildingId){

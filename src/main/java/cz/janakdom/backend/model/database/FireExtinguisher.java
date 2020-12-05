@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 public class FireExtinguisher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer id;
 
     @Enumerated(EnumType.STRING)

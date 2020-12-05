@@ -19,6 +19,8 @@ public class TelNumberService {
 
     @Autowired
     private TelNumberDao telNumberDao;
+    @Autowired
+    private BuildingService buildingService;
 
     public List<TelNumber> findAll() {
         return telNumberDao.findAll();
@@ -33,8 +35,13 @@ public class TelNumberService {
     public TelNumber save(TelNumberDto inputModel) {
         TelNumber telNumber = new TelNumber();
         BeanUtils.copyProperties(inputModel, telNumber, "id");
-
-        return telNumberDao.save(telNumber);
+        Building building = buildingService.findById(inputModel.getBuilding_id());
+        if (building != null){
+            telNumber.setBuilding(building);
+            return telNumberDao.save(telNumber);
+        } else{
+            return null;
+        }
     }
 
     public void deleteAllByBuildingId(Integer buildingId){

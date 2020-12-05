@@ -51,6 +51,28 @@ public class BuildingController {
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", buildingService.save(inputModel));
     }
 
+    @GetMapping("/{id}")
+    public ApiResponse<Building> findBuilding(@PathVariable int id) {
+        Building building = buildingService.findById(id);
+
+        if (building == null) {
+            return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+        }
+
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", building);
+    }
+
+    @GetMapping("/")
+    public ApiResponse<List<Building>> findAllBuildings() {
+        List<Building> buildings = buildingService.findAllNotDeleted();
+
+        if (buildings.size()==0) {
+            return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+        }
+
+        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", buildings);
+    }
+
     @PutMapping("/{id}")
     public ApiResponse<Building> updateBuilding(@PathVariable int id, @RequestBody BuildingUpdateDto inputmodel) throws Exception {
         Building updated = buildingService.update(id, inputmodel);
@@ -99,7 +121,7 @@ public class BuildingController {
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", files);
     }
 
-    @GetMapping("/file/download1/{fileId}")
+    @GetMapping("/file/download1/{fileId}")//funkcni
     public ResponseEntity<byte[]> downloadFileV1(@PathVariable Integer fileId) {
         FileDB fileDB = fileService.getFile(fileId);
         try {
@@ -112,17 +134,27 @@ public class BuildingController {
     }
 
 
-    @GetMapping("/file/download2/{hash}")
-    public String downloadFileV2(@PathVariable("hash") Integer hash, HttpServletResponse response) throws IOException, SQLException {
-        FileDB fileDB = fileService.getFile(hash);
+    @GetMapping("/file/download2/{id}")//pravdepodobne nefunguje
+    public String downloadFileV2(@PathVariable("id") Integer id, HttpServletResponse response) throws IOException, SQLException {
+        FileDB fileDB = fileService.getFile(id);
         Blob blobFile = fileDB.getContent();
 
         org.apache.commons.io.IOUtils.copy(blobFile.getBinaryStream(), response.getOutputStream());
-        response.addHeader("Content-disposition", "attachment; filename=" + fileDB.getFilename() + fileDB.getContentType());
+        response.addHeader("Content-disposition", "attachment; filename=" + fileDB.getFilename() /*+ fileDB.getContentType()*/);
         response.setContentType(fileDB.getContentType());
         response.flushBuffer();
 
         return null;
+    }
+
+    @DeleteMapping("/file/{id}")
+    public ApiResponse<Void> deleteFile(@PathVariable int id) {
+        boolean deleted = fileService.delete(id);
+
+        if (deleted) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", null);
+        }
+        return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
     }
 
     @PostMapping("/eps/")
@@ -142,7 +174,11 @@ public class BuildingController {
 
     @PostMapping("/extinguisher/")
     public ApiResponse<FireExtinguisher> createFireExtingusher(@RequestBody FireExtinguisherDto inputModel) throws Exception {
-        return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireExtinguisherService.save(inputModel));
+        FireExtinguisher extinguisher = fireExtinguisherService.save(inputModel);
+        if (extinguisher != null){
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireExtinguisherService.save(inputModel));
+        }
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "PROBABLY-BAD-TYPE", null);
     }
 
     @DeleteMapping("/extinguisher/{id}")

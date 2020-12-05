@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class Hydrant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer id;
 
     @Column(nullable = false, length = 30)

@@ -16,7 +16,6 @@ import javax.persistence.*;
 public class EPS {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer id;
 
     @Column(nullable = false, length = 50)
@@ -27,5 +26,6 @@ public class EPS {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "building_id", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Building building;
 }

@@ -2,6 +2,7 @@ package cz.janakdom.backend.service;
 
 import cz.janakdom.backend.dao.TechnicalSystemDao;
 import cz.janakdom.backend.dao.TelNumberDao;
+import cz.janakdom.backend.model.database.Building;
 import cz.janakdom.backend.model.database.TechnicalSystem;
 import cz.janakdom.backend.model.database.TelNumber;
 import cz.janakdom.backend.model.dto.TechnicalSystemDto;
@@ -18,6 +19,8 @@ public class TechnicalSystemService {
 
     @Autowired
     private TechnicalSystemDao technicalSystemDao;
+    @Autowired
+    private BuildingService buildingService;
 
     public List<TechnicalSystem> findAll() {
         return technicalSystemDao.findAll();
@@ -32,8 +35,13 @@ public class TechnicalSystemService {
     public TechnicalSystem save(TechnicalSystemDto inputModel) {
         TechnicalSystem technicalSystem = new TechnicalSystem();
         BeanUtils.copyProperties(inputModel, technicalSystem, "id");
-
-        return technicalSystemDao.save(technicalSystem);
+        Building building = buildingService.findById(inputModel.getBuilding_id());
+        if (building != null){
+            technicalSystem.setBuilding(building);
+            return technicalSystemDao.save(technicalSystem);
+        } else{
+            return null;
+        }
     }
 
     public void deleteAllByBuildingId(Integer buildingId){
