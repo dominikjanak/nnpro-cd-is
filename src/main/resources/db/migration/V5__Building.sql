@@ -50,7 +50,7 @@ create table TEL_NUMBER (
 );
 create table FILE (
   ID int not null auto_increment,
-  CONTENT blob not null,
+  CONTENT mediumblob not null,
   CONTENT_TYPE varchar(255) not null,
   CREATED timestamp not null,
   FILENAME varchar(150) not null,
