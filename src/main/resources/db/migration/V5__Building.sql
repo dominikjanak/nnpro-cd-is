@@ -1,9 +1,6 @@
 ALTER TABLE `security_incident` CHANGE `carriage_id` `carriage_id` INT NULL DEFAULT NULL;
 ALTER TABLE `security_incident` ADD `building_id` INT NULL  DEFAULT NULL AFTER `carriage_id`;
 
-ALTER TABLE security_incident
-ADD FOREIGN KEY (building_id) REFERENCES BUILDING (ID);
-
 create table BUILDING (
   ID int not null auto_increment,
   ELECT_SWITCHBOARD varchar(50) not null,
@@ -88,6 +85,10 @@ create table HYDRANT (
     foreign key (BUILDING_ID)
     references BUILDING (ID)
 );
+
+
+ALTER TABLE security_incident
+ADD FOREIGN KEY (building_id) REFERENCES BUILDING (ID);
 
 INSERT INTO BUILDING (ID, ELECT_SWITCHBOARD, GAS_SHUT_OFF, WATER_SHUT_OFF, ADDRESS, BUILDING_MANAGER, GPS, OWNER, INNERNO, IS_DELETED) VALUES (1, 'Prvni patro chodba', 'Kotelna', 'Neni v budove', 'Strakonicka 1899 Praha 2', 'Jan Z Rokycan', '54.123465 78.78945', 'CD Cargo', 'BD1234', false);
 
