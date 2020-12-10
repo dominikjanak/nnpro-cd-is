@@ -23,13 +23,13 @@ public class FileDB {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 150, unique = true)
+    @Column(nullable = false, length = 150)
     private String filename;
 
     @Lob
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Blob content;
+    private byte[] content;
 
     @Column(nullable = false)
     private String contentType;

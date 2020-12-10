@@ -27,15 +27,12 @@ public class FileService {
     private BuildingService buildingService;
 
     public FileDB save(MultipartFile file, Integer building_id) throws IOException, SQLException {
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         FileDB fileDB = new FileDB();
         fileDB.setFilename(fileName);
         fileDB.setBuilding(buildingService.findById(building_id));
-
-        Blob blob = new SerialBlob(file.getBytes());
-        fileDB.setContent(blob);
-
+        fileDB.setContent(file.getBytes());
         fileDB.setContentType(file.getContentType());
 
         return fileDao.save(fileDB);

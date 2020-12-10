@@ -11,8 +11,11 @@ import cz.janakdom.backend.model.enums.ReportType;
 import cz.janakdom.backend.security.AuthLevel;
 import cz.janakdom.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -122,29 +125,16 @@ public class BuildingController {
     }
 
     @GetMapping("/file/download1/{fileId}")//funkcni
-    public ResponseEntity<byte[]> downloadFileV1(@PathVariable Integer fileId) {
+    public ResponseEntity<Resource> downloadFileV1(@PathVariable Integer fileId) {
         FileDB fileDB = fileService.getFile(fileId);
         try {
             return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(fileDB.getContentType()))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getFilename() + "\"")
-                    .body(fileDB.getContent().getBytes(1L, (int)fileDB.getContent().length()));
-        } catch (SQLException throwables) {
+                    .body(new ByteArrayResource(fileDB.getContent()));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-    }
-
-
-    @GetMapping("/file/download2/{id}")//pravdepodobne nefunguje
-    public String downloadFileV2(@PathVariable("id") Integer id, HttpServletResponse response) throws IOException, SQLException {
-        FileDB fileDB = fileService.getFile(id);
-        Blob blobFile = fileDB.getContent();
-
-        org.apache.commons.io.IOUtils.copy(blobFile.getBinaryStream(), response.getOutputStream());
-        response.addHeader("Content-disposition", "attachment; filename=" + fileDB.getFilename() /*+ fileDB.getContentType()*/);
-        response.setContentType(fileDB.getContentType());
-        response.flushBuffer();
-
-        return null;
     }
 
     @DeleteMapping("/file/{id}")
