@@ -66,4 +66,8 @@ public class FileService {
         return true;
     }
 
+    public void deleteAllByBuildingId(int buildingId) {
+        fileDao.deleteAllByBuildingId(buildingId);
+    }
+
 }

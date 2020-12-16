@@ -7,6 +7,7 @@ import cz.janakdom.backend.model.dto.building.BuildingUpdateDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,9 @@ public class BuildingService {
     private TechnicalSystemService technicalSystemService;
     @Autowired
     private TelNumberService telNumberService;
+
+    @Autowired
+    private FileService fileService;
 
     public List<Building> findAll() {
         return buildingDao.findAll();
@@ -72,6 +76,7 @@ public class BuildingService {
         return building;
     }
 
+    @Transactional
     public boolean delete(Integer id) {
         Building building = this.findById(id);
 
@@ -88,6 +93,7 @@ public class BuildingService {
                 hydrantService.deleteAllByBuildingId(building.getId());
                 technicalSystemService.deleteAllByBuildingId(building.getId());
                 telNumberService.deleteAllByBuildingId(building.getId());
+                fileService.deleteAllByBuildingId(building.getId());
                 buildingDao.delete(building);
             }
             return true;
