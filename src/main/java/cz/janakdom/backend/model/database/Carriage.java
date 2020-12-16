@@ -31,6 +31,12 @@ public class Carriage {
     @Column(nullable = false, length = 75)
     private String homeStation;
 
+    @Column()
+    private Float length;
+
+    @Column()
+    private Float weight;
+
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;

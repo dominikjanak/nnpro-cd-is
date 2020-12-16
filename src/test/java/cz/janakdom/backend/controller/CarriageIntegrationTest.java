@@ -33,12 +33,12 @@ public class CarriageIntegrationTest {
     public void crud() {
         verifyCrud(1, null, Arrays.asList()); // Empty DB.
 
-        Carriage carriage1 = carriageController.createCarriage(new CarriageDto("A", "B", "C", "D")).getResult();
-        Carriage carriage2 = carriageController.createCarriage(new CarriageDto("B", "C", "D", "E")).getResult();
+        Carriage carriage1 = carriageController.createCarriage(new CarriageDto("A", "B", "C", "D", 1,1)).getResult();
+        Carriage carriage2 = carriageController.createCarriage(new CarriageDto("B", "C", "D", "E",1 ,1)).getResult();
 
         verifyCrud(carriage1.getId(), carriage1, Arrays.asList(carriage1, carriage2)); // Two added items.
 
-        carriage1 = carriageController.updateCarriage(carriage1.getId(), new CarriageUpdateDto("C", "D", "E")).getResult();
+        carriage1 = carriageController.updateCarriage(carriage1.getId(), new CarriageUpdateDto("C", "D", "E", 1, 1)).getResult();
 
         verifyCrud(carriage2.getId(), carriage2, Arrays.asList(carriage1, carriage2)); // Updated item.
 
@@ -62,7 +62,7 @@ public class CarriageIntegrationTest {
     public void updateNotFound() {
         Carriage carriage = creator.saveEntity(new Carriage());
 
-        ApiResponse<Carriage> response = carriageController.updateCarriage(carriage.getId() * 2, new CarriageUpdateDto("A", "B", "C"));
+        ApiResponse<Carriage> response = carriageController.updateCarriage(carriage.getId() * 2, new CarriageUpdateDto("A", "B", "C", 1, 1));
         ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
 
         Assertions.assertThat(response).isEqualTo(expected);
@@ -72,11 +72,11 @@ public class CarriageIntegrationTest {
 
     @Test
     public void create() {
-        CarriageDto carriageDto1 = new CarriageDto(null, "B", "C", "D");
-        CarriageDto carriageDto2 = new CarriageDto("B", null, "D", "E");
-        CarriageDto carriageDto3 = new CarriageDto("C", "D", "E", null);
-        CarriageDto carriageDto4 = new CarriageDto("D", "E", null, "G");
-        CarriageDto carriageDto5 = new CarriageDto("D", "F", "G", "H");
+        CarriageDto carriageDto1 = new CarriageDto(null, "B", "C", "D", 1 ,1);
+        CarriageDto carriageDto2 = new CarriageDto("B", null, "D", "E" ,1 ,1);
+        CarriageDto carriageDto3 = new CarriageDto("C", "D", "E", null, 1, 1);
+        CarriageDto carriageDto4 = new CarriageDto("D", "E", null, "G",1 ,1);
+        CarriageDto carriageDto5 = new CarriageDto("D", "F", "G", "H",1, 1);
 
         ApiResponse<Carriage> response1 = carriageController.createCarriage(carriageDto1);
         ApiResponse<Carriage> response2 = carriageController.createCarriage(carriageDto2);
@@ -103,7 +103,7 @@ public class CarriageIntegrationTest {
     @Test
     public void update() {
         Carriage carriage1 = creator.saveEntity(new Carriage(1, "A"));
-        CarriageUpdateDto updated = new CarriageUpdateDto(null, carriage1.getColor(), carriage1.getHomeStation());
+        CarriageUpdateDto updated = new CarriageUpdateDto(null, carriage1.getColor(), carriage1.getHomeStation(), 1, 1);
 
         ApiResponse<Carriage> response = carriageController.updateCarriage(carriage1.getId(), updated);
         ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-PRODUCER", null);

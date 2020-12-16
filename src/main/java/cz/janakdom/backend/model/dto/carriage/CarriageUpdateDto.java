@@ -11,4 +11,6 @@ public class CarriageUpdateDto {
     private String producer;
     private String color;
     private String homeStation;
+    private float length;
+    private float weight;
 }
