@@ -1,6 +1,5 @@
 package cz.janakdom.backend.controller;
 
-import cz.janakdom.backend.Creator;
 import cz.janakdom.backend.controller.rest.internal.CarriageController;
 import cz.janakdom.backend.model.ApiResponse;
 import cz.janakdom.backend.model.database.Carriage;
@@ -22,9 +21,6 @@ import java.util.List;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CarriageIntegrationTest {
-
-    @Autowired
-    private Creator creator;
 
     @Autowired
     private CarriageController carriageController;
@@ -49,18 +45,20 @@ public class CarriageIntegrationTest {
 
     @Test
     public void deleteNotFound() {
-        Carriage carriage = creator.saveEntity(new Carriage());
+        CarriageDto carriage1Dto = new CarriageDto("A", "B", "C", "D", 1 ,1);
+        Carriage carriage = carriageController.createCarriage(carriage1Dto).getResult();
 
         ApiResponse<Void> response = carriageController.deleteCarriage(carriage.getId() * 2);
         ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "BAD-REQUEST", null);
         Assertions.assertThat(response).isEqualTo(expected);
 
-        verifyCrud(carriage.getId(), carriage, Arrays.asList(carriage)); // There should be still ona carriage in DB.
+        verifyCrud(carriage.getId(), carriage, Arrays.asList(carriage)); // There should be still one carriage in DB.
     }
 
     @Test
     public void updateNotFound() {
-        Carriage carriage = creator.saveEntity(new Carriage());
+        CarriageDto carriage1Dto = new CarriageDto("A", "B", "C", "D", 1 ,1);
+        Carriage carriage = carriageController.createCarriage(carriage1Dto).getResult();
 
         ApiResponse<Carriage> response = carriageController.updateCarriage(carriage.getId() * 2, new CarriageUpdateDto("A", "B", "C", 1, 1));
         ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
@@ -102,8 +100,10 @@ public class CarriageIntegrationTest {
 
     @Test
     public void update() {
-        Carriage carriage1 = creator.saveEntity(new Carriage(1, "A"));
-        CarriageUpdateDto updated = new CarriageUpdateDto(null, carriage1.getColor(), carriage1.getHomeStation(), 1, 1);
+        CarriageDto carriage1Dto = new CarriageDto("A", "B", "C", "D", 1 ,1);
+        Carriage carriage1 = carriageController.createCarriage(carriage1Dto).getResult();
+
+        CarriageUpdateDto updated = new CarriageUpdateDto(null, carriage1.getColor(), carriage1.getHomeStation(), carriage1.getLength(), carriage1.getWeight());
 
         ApiResponse<Carriage> response = carriageController.updateCarriage(carriage1.getId(), updated);
         ApiResponse<Carriage> expected = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "EMPTY-PRODUCER", null);
