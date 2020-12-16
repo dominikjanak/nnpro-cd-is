@@ -69,9 +69,9 @@ public class BuildingController {
     public ApiResponse<List<Building>> findAllBuildings() {
         List<Building> buildings = buildingService.findAllNotDeleted();
 
-        if (buildings.size()==0) {
-            return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
-        }
+        //if (buildings.size()==0) {
+        //    return new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "NOT-FOUND", null);
+        //}
 
         return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", buildings);
     }
