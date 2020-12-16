@@ -9,26 +9,6 @@ Na adrese [app-cd-is.herokuapp.com](https://app-cd-is.herokuapp.com/) je definov
 - **User:** sa
 - **Pass:** password
 
-## Externí entity - CRUD
-- Railroad - done
-- InterventionType - done
-- AttackedSubject - done
-
-## Interní entity - CRUD
-- Area - fixed R
-- Carriage - done
-- Damage
-- DamageType - done
-- FireBridgeUnit
-- FireIncident
-- Incident
-- PremiseIncident
-- Region - fixed R
-- Report - **partial**
-- Role - done
-- SecurityIncident
-- User
-
 ## Vnitřní implementace
 Stručný popis jednotlivých implementovaných sekcí
 
@@ -47,8 +27,4 @@ Je podmíněna následným schválením uživatele administrátorem. **Řízení
 Žádost je odelána po zadání uživatelského jména. **Je třeba posoudit:** odeslání emailu pro vytvoření žádosti potvrzení o obnovu hesla administrátorem.
 
 ## TODO
-- Dodělat endpointy pro změnu osobních údajů a hesla. (Dominik)
-- **Návrh šablony systému v Bootstrap 4.5 za pomocí FontAwesome**
-- Dodělat aplikaci
-- Generování reportů
-- CronJob (externí - heroku se uspává nebo interní?)
+- nic
