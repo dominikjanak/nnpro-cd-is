@@ -166,7 +166,7 @@ public class BuildingController {
     public ApiResponse<FireExtinguisher> createFireExtingusher(@RequestBody FireExtinguisherDto inputModel) throws Exception {
         FireExtinguisher extinguisher = fireExtinguisherService.save(inputModel);
         if (extinguisher != null){
-            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", fireExtinguisherService.save(inputModel));
+            return new ApiResponse<>(HttpStatus.OK.value(), "SUCCESS", extinguisher);
         }
         return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "PROBABLY-BAD-TYPE", null);
     }
