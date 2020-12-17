@@ -81,4 +81,8 @@ public class CarriageService {
 
         return false;
     }
+
+    public void deleteAll() {
+        carriageDao.deleteAll();
+    }
 }

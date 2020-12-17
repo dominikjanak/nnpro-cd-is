@@ -13,4 +13,5 @@ public class CarriageUpdateDto {
     private String homeStation;
     private float length;
     private float weight;
+    private String depo;
 }

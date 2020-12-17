@@ -1,3 +1,5 @@
+DELETE FROM damage;
+DELETE FROM file;
 DELETE FROM incident;
 DELETE FROM security_incident;
 DELETE FROM fire_incident;
@@ -45,10 +47,10 @@ INSERT INTO user (id, email, username, password, firstname, surname, area_id, re
 (1, 'admin@example.com', 'admin', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', NULL, NULL, NULL, false, 1, 0),
 (2, 'user@example.com', 'user', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', 'Uživatel', 'Veselý', 3, false, 2, 0);
 
-INSERT INTO carriage (id, serial_number, producer, color, home_station, is_deleted, weight, length) VALUES
-(1, '18 26 7744 123-5', 'Krnovské opravny a strojírny s.r.o.', 'Červená', 'Pardubice hl. n.', 0, 22.5, 18.8),
-(2, '22 17 6541 889-0', 'ŠKODA VAGONKA a.s.', 'Zelená', 'Praha hl. n.', 0, 18.6, 17),
-(3, '28 36 8732 763-6', 'CZ LOKO a.a.', 'Černá', 'Bohumín', 0, 20.2, 18.3);
+INSERT INTO carriage (id, serial_number, producer, color, home_station, is_deleted, weight, length, depo) VALUES
+(1, '18 26 7744 123-5', 'Krnovské opravny a strojírny s.r.o.', 'Červená', 'Pardubice hl. n.', 0, 22.5, 18.8, 'DKV Pardubice'),
+(2, '22 17 6541 889-0', 'ŠKODA VAGONKA a.s.', 'Zelená', 'Praha hl. n.', 0, 18.6, 17, 'DKV Praha'),
+(3, '28 36 8732 763-6', 'CZ LOKO a.a.', 'Černá', 'Bohumín', 0, 20.2, 18.3, 'DKV Bohumín');
 
 INSERT INTO damage_type (id, name, is_deleted) VALUES
 (NULL, 'Damage one', 0),

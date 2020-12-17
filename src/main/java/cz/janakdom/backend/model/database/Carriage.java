@@ -37,6 +37,9 @@ public class Carriage {
     @Column()
     private Float weight;
 
+    @Column()
+    private String depo;
+
     @JsonIgnore
     @Column(nullable = false)
     private Boolean isDeleted = false;
