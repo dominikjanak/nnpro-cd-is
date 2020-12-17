@@ -96,19 +96,25 @@ public class SecurityIncidentService {
         incident.setLocation(inputModel.getLocation());
         System.out.println("car"+inputModel.getCarriage_id());
         System.out.println("bui"+inputModel.getBuilding_id());
+
         if (inputModel.getCarriage_id() != 0) {
             Carriage carriage = carriageService.findById(inputModel.getCarriage_id());
             if (carriage == null) {
                 throw new Exception("CARRIAGE-NOT-FOUND");
             }
             securityIncident.setCarriage(carriage);
+        } else {
+            securityIncident.setCarriage(null);
         }
+
         if (inputModel.getBuilding_id() != 0) {
             Building building = buildingService.findById(inputModel.getBuilding_id());
             if (building == null) {
                 throw new Exception("BUILDING-NOT-FOUND");
             }
             securityIncident.setBuilding(building);
+        } else {
+            securityIncident.setBuilding(null);
         }
 
         Railroad railroad = railroadService.findById(inputModel.getRailroad_id());
