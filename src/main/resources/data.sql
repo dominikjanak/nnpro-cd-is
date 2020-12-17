@@ -1,4 +1,4 @@
-DELETE FROM damage;
+/*DELETE FROM damage;
 DELETE FROM file;
 DELETE FROM incident;
 DELETE FROM security_incident;
@@ -10,7 +10,8 @@ DELETE FROM tel_number;
 DELETE FROM technical_system;
 DELETE FROM building;
 DELETE FROM damage_type;
-DELETE FROM fire_brigade_unit;
+DELETE FROM fire_brigade_unit;*/
+
 DELETE FROM user;
 DELETE FROM region;
 DELETE FROM area;
@@ -47,7 +48,7 @@ INSERT INTO user (id, email, username, password, firstname, surname, area_id, re
 (1, 'admin@example.com', 'admin', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', NULL, NULL, NULL, false, 1, 0),
 (2, 'user@example.com', 'user', '$2a$10$jd2BK8zYq5ySLaBsaFjpgOF5SsvDJkWHpFea4xpEmlHGzu2TjNuV2', 'Uživatel', 'Veselý', 3, false, 2, 0);
 
-INSERT INTO carriage (id, serial_number, producer, color, home_station, is_deleted, weight, length, depo) VALUES
+/*INSERT INTO carriage (id, serial_number, producer, color, home_station, is_deleted, weight, length, depo) VALUES
 (1, '18 26 7744 123-5', 'Krnovské opravny a strojírny s.r.o.', 'Červená', 'Pardubice hl. n.', 0, 22.5, 18.8, 'DKV Pardubice'),
 (2, '22 17 6541 889-0', 'ŠKODA VAGONKA a.s.', 'Zelená', 'Praha hl. n.', 0, 18.6, 17, 'DKV Praha'),
 (3, '28 36 8732 763-6', 'CZ LOKO a.a.', 'Černá', 'Bohumín', 0, 20.2, 18.3, 'DKV Bohumín');
@@ -76,3 +77,9 @@ INSERT INTO technical_system (id, name, system_type, location, manufacturer, bui
 
 INSERT INTO eps (id, type, location, building_id) VALUES
 (1, 'EPS 1', '2. patro', 1);
+
+INSERT INTO security_incident (id, checked, crime, police, manager_id, carriage_id, building_id, railroad_id) VALUES
+(1, 0, 1, 1, 2, 1, 1, 1);
+
+INSERT INTO incident (id, creationDateTime, location, note, description, owner_id, region_id, securityIncident_id) VALUES
+(1, '2012-11-03T10:15:30', 'Pardubice hl. n.', 'Zkontrolovat', 'Rozbité okno', 2, 9, 1);*/
